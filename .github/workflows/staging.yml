@@ -20,5 +20,6 @@ jobs:
           username: ${{ secrets.DROPLET_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd hr-telegram-bot/scripts/
+            cd hr-telegram-bot
+            cd scripts
             bash staging-deploy.sh
