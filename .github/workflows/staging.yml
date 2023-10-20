@@ -19,4 +19,4 @@ jobs:
           host: ${{ secrets.DROPLET_IP }}
           username: ${{ secrets.DROPLET_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: ./scripts/staging.sh
+          script: ./hr-telegram-bot/scripts/staging.sh
