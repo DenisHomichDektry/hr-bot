@@ -18,7 +18,7 @@ export class AppUpdate {
   }
 
   @Help()
-  async help(@Ctx() ctx: string) {
+  async help(@Ctx() ctx: SceneContext) {
     await ctx.reply('Send me a sticker');
   }
 
@@ -29,6 +29,6 @@ export class AppUpdate {
 
   @Hears('hi')
   async hears(@Ctx() ctx: SceneContext) {
-    await ctx.reply("Hey there. I'm staging");
+    await ctx.reply("Hey there. I'm staging. Test");
   }
 }
