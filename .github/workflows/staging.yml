@@ -22,7 +22,7 @@ jobs:
           script: |
             cd hr-telegram-bot
             git checkout staging
-            git pull
+            sudo git pull
             yarn
             yarn build
             pm2 restart hrbot
