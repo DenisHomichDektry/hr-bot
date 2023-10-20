@@ -20,9 +20,11 @@ jobs:
           username: ${{ secrets.DROPLET_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            eval "$(ssh-agent -s)"
+            ssh-add ~/.ssh/github-hr-telegram-bot
             cd hr-telegram-bot
             git checkout staging
-            sudo git pull
+            git pull
             yarn
             yarn build
             pm2 restart hrbot
