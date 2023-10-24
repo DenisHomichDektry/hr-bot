@@ -1,6 +1,11 @@
 import { Update, Ctx, Start, Help, On, Hears } from 'nestjs-telegraf';
+import { Update as UpdateNameSpace } from 'telegraf/typings/core/types/typegram';
 import { SceneContext } from 'telegraf/typings/scenes';
 
+import { Roles } from 'src/auth/reles.decorator';
+import { Role } from 'src/auth/role.enum';
+
+@Roles(Role.Admin)
 @Update()
 export class AppUpdate {
   @Start()
@@ -28,7 +33,10 @@ export class AppUpdate {
   }
 
   @Hears('hi')
-  async hears(@Ctx() ctx: SceneContext) {
+  async hears(
+    @Ctx() ctx: SceneContext & { update: UpdateNameSpace.MessageUpdate },
+  ) {
+    console.log(ctx.update.message.from);
     await ctx.reply("Hey there. I'm staging. Test");
   }
 }

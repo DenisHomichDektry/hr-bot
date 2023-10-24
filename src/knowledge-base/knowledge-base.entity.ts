@@ -8,7 +8,7 @@ import {
 @Entity('knowledge_base')
 export class KnowledgeBaseEntity {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @Column()
   title: string;
