@@ -18,6 +18,9 @@ git pull || exit 1
 # Install dependencies
 yarn || exit 1
 
+# Run database migrations
+yarn migration:run  || exit 1
+
 # Build the project
 yarn build || exit 1
 
