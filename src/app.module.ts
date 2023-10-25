@@ -13,10 +13,12 @@ import { AuthGuard } from 'src/auth/auth.guard';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AppUpdate } from './app.update';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { GlobalExceptionFilter } from './global-exception.filter';
+import { AdminModule } from './admin/admin.module';
+import { AppUpdate } from './app.update';
+import { StartScene } from './start-scene.scene';
 
 @Module({
   imports: [
@@ -30,11 +32,13 @@ import { GlobalExceptionFilter } from './global-exception.filter';
     KnowledgeBaseModule,
     AuthModule,
     UserModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
     AppUpdate,
+    StartScene,
     {
       provide: APP_FILTER,
       useClass: GlobalExceptionFilter,
@@ -48,5 +52,6 @@ import { GlobalExceptionFilter } from './global-exception.filter';
       useClass: RolesGuard,
     },
   ],
+  exports: [AppService],
 })
 export class AppModule {}

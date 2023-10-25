@@ -20,8 +20,6 @@ export class RolesGuard implements CanActivate {
     }
 
     const sceneContext = context.getArgs()[0] as SceneContext;
-    return requiredRoles.some(
-      (role) => sceneContext.message.from.role === role,
-    );
+    return requiredRoles.some((role) => sceneContext.state.role === role);
   }
 }
