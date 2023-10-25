@@ -1,0 +1,15 @@
+export enum Actions {
+  KnowledgeBase = 'Knowledge Base',
+  AdminPanel = 'Admin Panel',
+  Onboarding = 'Onboarding',
+  UserManagement = 'User Management',
+  KnowledgeBaseManagement = 'Knowledge Base Management',
+  OnboardingManagement = 'Onboarding Management',
+  LeaveAdminPanel = 'Leave Admin Panel',
+  AddUser = 'Add User',
+  ViewUsers = 'View Users',
+  Back = 'Back',
+  ShareChat = 'Share Chat',
+  Edit = 'Edit',
+  Remove = 'Remove',
+}

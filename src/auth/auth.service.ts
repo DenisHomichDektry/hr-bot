@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/user/services/user.service';
 import { SceneContext } from 'src/types';
 
 import { ICachedUsers } from './types';
@@ -13,12 +13,11 @@ export class AuthService {
   private cachedUsers: ICachedUsers = {};
 
   async validateUser(sceneContext: SceneContext): Promise<boolean> {
-    const userRole = await this.getUserRole(
-      sceneContext.update.message.from.id,
-    );
+    const from = sceneContext.message?.from || sceneContext.callbackQuery?.from;
+    const userRole = await this.getUserRole(from.id);
 
     if (userRole) {
-      sceneContext.message.from.role = userRole;
+      sceneContext.state.role = userRole;
       return true;
     }
 

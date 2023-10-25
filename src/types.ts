@@ -8,5 +8,16 @@ export interface SceneContext extends SceneContextImport {
     from: User & {
       role: 'admin' | 'user' | null;
     };
+    chat_shared?: {
+      request_id: number;
+      chat_id: number;
+    };
+    user_shared?: {
+      request_id: number;
+      user_id: number;
+    };
+  };
+  state: {
+    role?: 'admin' | 'user' | null;
   };
 }
