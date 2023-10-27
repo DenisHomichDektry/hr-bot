@@ -15,12 +15,18 @@ export class KnowledgeBaseScene {
     if (!ctx.session.__scenes.state.management) {
       const keyboard =
         await this.knowledgeBaseService.getKnowledgeBaseKeyboard();
-      await ctx.reply('TODO: add knowledge base!', {
-        reply_markup: {
-          keyboard,
-          resize_keyboard: true,
-        },
-      });
+
+      if (keyboard.length === 0) {
+        await ctx.reply('Knowledge Base is empty!');
+        await ctx.scene.enter(Scenes.Start);
+      } else {
+        await ctx.reply('Choose category:', {
+          reply_markup: {
+            keyboard,
+            resize_keyboard: true,
+          },
+        });
+      }
     } else {
       await ctx.reply('Welcome to Knowledge Base Management!', {
         reply_markup: {
