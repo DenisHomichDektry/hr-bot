@@ -2,6 +2,8 @@ import { Ctx, Hears, Scene, SceneEnter } from 'nestjs-telegraf';
 
 import { SceneContext } from 'src/types';
 import { Scenes, Actions } from 'src/constants';
+import { Roles } from 'src/auth/reles.decorator';
+import { Role } from 'src/auth/role.enum';
 
 import * as Keyboards from '../keyboards';
 import { KnowledgeBaseService } from '../services/knowledge-base.service';
@@ -37,6 +39,7 @@ export class KnowledgeBaseScene {
     }
   }
 
+  @Roles(Role.Admin)
   @Hears(Actions.AddKnowledgeBaseCategory)
   async addCategory(@Ctx() ctx: SceneContext) {
     await ctx.scene.enter(
@@ -45,11 +48,13 @@ export class KnowledgeBaseScene {
     );
   }
 
+  @Roles(Role.Admin)
   @Hears(Actions.RemoveKnowledgeBaseCategory)
   async removeCategory(@Ctx() ctx: SceneContext) {
     await ctx.reply('TODO: remove category!');
   }
 
+  @Roles(Role.Admin)
   @Hears(Actions.AddKnowledgeBaseItem)
   async addItem(@Ctx() ctx: SceneContext) {
     await ctx.scene.enter(
@@ -58,6 +63,7 @@ export class KnowledgeBaseScene {
     );
   }
 
+  @Roles(Role.Admin)
   @Hears(Actions.RemoveKnowledgeBaseItem)
   async removeItem(@Ctx() ctx: SceneContext) {
     await ctx.reply('TODO: remove item!');

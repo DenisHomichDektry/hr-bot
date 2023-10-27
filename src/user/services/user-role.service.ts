@@ -17,4 +17,8 @@ export class UserRoleService {
       where: getUserRoleDto,
     });
   }
+
+  async findAll() {
+    return this.userRoleRepository.find();
+  }
 }

@@ -27,6 +27,12 @@ export interface SceneContext extends TelegrafSceneContext {
           link?: string;
           category?: string;
         };
+        user_id?: number;
+        user?: {
+          firstName?: string;
+          lastName?: string;
+          role?: 'admin' | 'user';
+        };
       };
     };
   };

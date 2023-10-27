@@ -9,7 +9,6 @@ export enum Actions {
   AddUser = 'Add User',
   ViewUsers = 'View Users',
   Back = 'Back',
-  ShareChat = 'Share Chat',
   Edit = 'Edit',
   Remove = 'Remove',
   AddKnowledgeBaseItem = 'Add Item',
