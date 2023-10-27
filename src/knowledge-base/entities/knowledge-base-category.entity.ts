@@ -5,13 +5,13 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity('user_role')
-export class UserRoleEntity {
+@Entity('knowledge_base_category')
+export class KnowledgeBaseCategoryEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
-  name: 'admin' | 'user';
+  name: string;
 
   @CreateDateColumn()
   createdAt: string;

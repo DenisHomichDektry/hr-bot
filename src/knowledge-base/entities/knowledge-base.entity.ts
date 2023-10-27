@@ -2,8 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
+import { KnowledgeBaseCategoryEntity } from './knowledge-base-category.entity';
 
 @Entity('knowledge_base')
 export class KnowledgeBaseEntity {
@@ -16,8 +19,8 @@ export class KnowledgeBaseEntity {
   @Column()
   link: string;
 
-  @Column()
-  description: string;
+  @ManyToOne(() => KnowledgeBaseCategoryEntity)
+  category: KnowledgeBaseCategoryEntity;
 
   @CreateDateColumn()
   createdAt: string;

@@ -30,6 +30,6 @@ export class StartScene {
 
   @Hears(Actions.KnowledgeBase)
   async knowledgeBase(@Ctx() ctx: SceneContext) {
-    await ctx.reply('TODO: add knowledge base');
+    await ctx.scene.enter(Scenes.KnowledgeBase);
   }
 }
