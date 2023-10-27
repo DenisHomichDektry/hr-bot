@@ -10,13 +10,6 @@ export const enter: KeyboardButton[][] = [
         request_id: +performance.now().toFixed(),
       },
     },
-    {
-      text: Actions.ShareChat,
-      request_chat: {
-        request_id: +performance.now().toFixed() + 1,
-        chat_is_channel: false,
-      },
-    },
   ],
   [
     {
@@ -34,6 +27,14 @@ export const userView: InlineKeyboardButton[][] = [
     {
       text: Actions.Remove,
       callback_data: Actions.Remove,
+    },
+  ],
+];
+
+export const addUserEnter: KeyboardButton[][] = [
+  [
+    {
+      text: Actions.Back,
     },
   ],
 ];

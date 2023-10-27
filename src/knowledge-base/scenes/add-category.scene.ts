@@ -2,10 +2,13 @@ import { Ctx, Hears, Scene, SceneEnter } from 'nestjs-telegraf';
 
 import { SceneContext } from 'src/types';
 import { Scenes, Actions } from 'src/constants';
+import { Roles } from 'src/auth/reles.decorator';
+import { Role } from 'src/auth/role.enum';
 
 import * as Keyboards from '../keyboards';
 import { KnowledgeBaseCategoryService } from '../services/knowledge-base-category.service';
 
+@Roles(Role.Admin)
 @Scene(Scenes.AddKnowledgeBaseCategory)
 export class AddKnowledgeBaseCategoryScene {
   constructor(

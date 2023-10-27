@@ -32,4 +32,9 @@ export class StartScene {
   async knowledgeBase(@Ctx() ctx: SceneContext) {
     await ctx.scene.enter(Scenes.KnowledgeBase);
   }
+
+  @Hears(Actions.Onboarding)
+  async onboarding(@Ctx() ctx: SceneContext) {
+    await ctx.reply('TODO: onboarding!');
+  }
 }
