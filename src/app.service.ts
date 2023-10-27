@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { SceneContext } from 'telegraf/typings/scenes';
+
 import { Role } from 'src/auth/role.enum';
 import { Actions } from 'src/constants';
-
-import { SceneContext } from './types';
 
 @Injectable()
 export class AppService {

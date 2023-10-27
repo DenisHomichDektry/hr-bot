@@ -7,7 +7,7 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
 
 import { KnowledgeBaseModule } from 'src/knowledge-base/knowledge-base.module';
-import { ormSource } from 'src/constants';
+import { ormSource, store } from 'src/constants';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { AuthGuard } from 'src/auth/auth.guard';
 
@@ -25,7 +25,7 @@ import { StartScene } from './start-scene.scene';
     ConfigModule.forRoot(),
     TelegrafModule.forRoot({
       token: process.env.TELEGRAM_TOKEN,
-      middlewares: [session()],
+      middlewares: [session({ store })],
     }),
     TypeOrmModule.forRoot(ormSource),
     ScheduleModule.forRoot(),

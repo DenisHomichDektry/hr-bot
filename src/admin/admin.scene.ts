@@ -1,9 +1,11 @@
-import { Ctx, Hears, On, Scene, SceneEnter } from 'nestjs-telegraf';
+import { Ctx, Hears, Scene, SceneEnter } from 'nestjs-telegraf';
 
 import { SceneContext } from 'src/types';
 import { Scenes, Actions } from 'src/constants';
 import { Roles } from 'src/auth/reles.decorator';
 import { Role } from 'src/auth/role.enum';
+
+import * as Keyboards from './keyboards';
 
 @Roles(Role.Admin)
 @Scene(Scenes.Admin)
@@ -12,13 +14,7 @@ export class AdminScene {
   async enter(@Ctx() ctx: SceneContext) {
     await ctx.reply('Welcome to Admin Panel!', {
       reply_markup: {
-        keyboard: [
-          [
-            { text: Actions.UserManagement },
-            { text: Actions.KnowledgeBaseManagement },
-          ],
-          [{ text: Actions.OnboardingManagement }, { text: Actions.Back }],
-        ],
+        keyboard: Keyboards.enter,
       },
     });
   }
@@ -30,7 +26,7 @@ export class AdminScene {
 
   @Hears(Actions.KnowledgeBaseManagement)
   async knowledgeBaseManagement(@Ctx() ctx: SceneContext) {
-    await ctx.reply('TODO: add knowledge base management');
+    await ctx.scene.enter(Scenes.KnowledgeBase, { management: true });
   }
 
   @Hears(Actions.OnboardingManagement)

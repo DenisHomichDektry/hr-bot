@@ -12,4 +12,8 @@ export enum Actions {
   ShareChat = 'Share Chat',
   Edit = 'Edit',
   Remove = 'Remove',
+  AddKnowledgeBaseItem = 'Add Item',
+  RemoveKnowledgeBaseCategory = 'Remove Category',
+  AddKnowledgeBaseCategory = 'Add Category',
+  RemoveKnowledgeBaseItem = 'Remove Item',
 }
