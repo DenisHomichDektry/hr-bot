@@ -12,7 +12,10 @@ export enum Actions {
   Edit = 'Edit',
   Remove = 'Remove',
   AddKnowledgeBaseItem = 'Add Item',
-  RemoveKnowledgeBaseCategory = 'Remove Category',
-  AddKnowledgeBaseCategory = 'Add Category',
   RemoveKnowledgeBaseItem = 'Remove Item',
+  ViewKnowledgeBaseItems = 'View Items',
+  AddKnowledgeBaseCategory = 'Add Category',
+  RemoveKnowledgeBaseCategory = 'Remove Category',
+  ViewKnowledgeBaseCategories = 'View Categories',
+  Confirm = 'Confirm',
 }

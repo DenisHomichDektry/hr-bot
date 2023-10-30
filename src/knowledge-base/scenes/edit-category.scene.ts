@@ -9,17 +9,17 @@ import * as Keyboards from '../keyboards';
 import { KnowledgeBaseCategoryService } from '../services/knowledge-base-category.service';
 
 @Roles(Role.Admin)
-@Scene(Scenes.AddKnowledgeBaseCategory)
-export class AddKnowledgeBaseCategoryScene {
+@Scene(Scenes.EditKnowledgeBaseCategory)
+export class EditCategoryScene {
   constructor(
     private readonly knowledgeBaseCategoryService: KnowledgeBaseCategoryService,
   ) {}
 
   @SceneEnter()
   async enter(@Ctx() ctx: SceneContext) {
-    await ctx.reply('Provide category name:', {
+    await ctx.reply('Provide new category name:', {
       reply_markup: {
-        keyboard: Keyboards.addKnowledgeBaseCategory,
+        keyboard: Keyboards.editKnowledgeBaseCategory,
         resize_keyboard: true,
       },
     });
@@ -27,24 +27,28 @@ export class AddKnowledgeBaseCategoryScene {
 
   @Hears(Actions.Back)
   async leave(@Ctx() ctx: SceneContext) {
-    await ctx.scene.enter(Scenes.KnowledgeBase, ctx.session.__scenes.state);
+    await ctx.scene.enter(Scenes.KnowledgeBase, {
+      ...ctx.session.__scenes.state,
+      knowledgeBaseCategory: undefined,
+    });
   }
 
   // all strings except for strings starting with '/' are valid
   @Hears(/^(?!\/).*/)
   async saveCategory(@Ctx() ctx: SceneContext) {
-    if (ctx.message.text?.length > 256) {
-      await ctx.reply('Category name is too long!');
-      return;
-    }
-    const category = await this.knowledgeBaseCategoryService.create({
+    const category = await this.knowledgeBaseCategoryService.update({
+      id: ctx.session.__scenes.state.knowledgeBaseCategory.id,
       name: ctx.message.text,
     });
 
-    if (category) {
-      await ctx.reply('Category saved!');
+    if (!category) {
+      await ctx.reply('Category with this name already exists!');
     } else {
-      await ctx.reply('Category not saved!');
+      await ctx.reply('Category successfully updated!');
     }
+    await ctx.scene.enter(Scenes.KnowledgeBase, {
+      ...ctx.session.__scenes.state,
+      knowledgeBaseCategory: undefined,
+    });
   }
 }

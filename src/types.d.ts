@@ -13,6 +13,7 @@ export interface SceneContext extends TelegrafSceneContext {
         user_id: number;
       };
     };
+  callbackQuery: tg.CallbackQuery.DataCallbackQuery;
   state: {
     role?: 'admin' | 'user' | null;
   };
@@ -26,6 +27,10 @@ export interface SceneContext extends TelegrafSceneContext {
           title?: string;
           link?: string;
           category?: string;
+        };
+        knowledgeBaseCategory?: {
+          id?: string;
+          name?: string;
         };
         user_id?: number;
         user?: {

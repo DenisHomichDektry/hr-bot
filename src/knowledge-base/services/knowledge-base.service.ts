@@ -55,14 +55,13 @@ export class KnowledgeBaseService {
 
       if (acc[index] === undefined) {
         acc.push([{ text: item.name }]);
-        return acc;
       }
 
-      if (acc[index].length === 2) {
+      if (acc[index]?.length === 2) {
         acc.push([{ text: item.name }]);
       }
 
-      if (acc[index].length < 2) {
+      if (acc[index]?.length < 2) {
         acc[index].push({ text: item.name });
       }
 
