@@ -1,4 +1,4 @@
-import { Ctx, Hears, Scene, SceneEnter } from 'nestjs-telegraf';
+import { Ctx, Hears, Scene, SceneEnter, Action } from 'nestjs-telegraf';
 
 import { SceneContext } from 'src/types';
 import { Scenes, Actions } from 'src/constants';
@@ -7,10 +7,14 @@ import { Role } from 'src/auth/role.enum';
 
 import * as Keyboards from '../keyboards';
 import { KnowledgeBaseService } from '../services/knowledge-base.service';
+import { KnowledgeBaseCategoryService } from '../services/knowledge-base-category.service';
 
 @Scene(Scenes.KnowledgeBase)
 export class KnowledgeBaseScene {
-  constructor(private readonly knowledgeBaseService: KnowledgeBaseService) {}
+  constructor(
+    private readonly knowledgeBaseService: KnowledgeBaseService,
+    private readonly knowledgeBaseCategoryService: KnowledgeBaseCategoryService,
+  ) {}
 
   @SceneEnter()
   async enter(@Ctx() ctx: SceneContext) {
@@ -49,9 +53,18 @@ export class KnowledgeBaseScene {
   }
 
   @Roles(Role.Admin)
-  @Hears(Actions.RemoveKnowledgeBaseCategory)
-  async removeCategory(@Ctx() ctx: SceneContext) {
-    await ctx.reply('TODO: remove category!');
+  @Hears(Actions.ViewKnowledgeBaseCategories)
+  async viewCategories(@Ctx() ctx: SceneContext) {
+    const responseData =
+      await this.knowledgeBaseCategoryService.viewCategories();
+
+    for (const data of responseData) {
+      await ctx.reply(data.text, data.args);
+    }
+
+    if (responseData.length === 0) {
+      await ctx.reply('No categories found!');
+    }
   }
 
   @Roles(Role.Admin)
@@ -64,9 +77,9 @@ export class KnowledgeBaseScene {
   }
 
   @Roles(Role.Admin)
-  @Hears(Actions.RemoveKnowledgeBaseItem)
-  async removeItem(@Ctx() ctx: SceneContext) {
-    await ctx.reply('TODO: remove item!');
+  @Hears(Actions.ViewKnowledgeBaseItems)
+  async viewItems(@Ctx() ctx: SceneContext) {
+    await ctx.reply('TODO: view item!');
   }
 
   @Hears(Actions.Back)
@@ -76,6 +89,30 @@ export class KnowledgeBaseScene {
     } else {
       await ctx.scene.enter(Scenes.Start);
     }
+  }
+
+  @Action(new RegExp(`^${Actions.Edit}category.*`))
+  async editCategory(@Ctx() ctx: SceneContext) {
+    const categoryId = ctx.callbackQuery.data.split('|')[1];
+
+    await ctx.scene.enter(Scenes.EditKnowledgeBaseCategory, {
+      ...ctx.session.__scenes.state,
+      knowledgeBaseCategory: {
+        id: categoryId,
+      },
+    });
+  }
+
+  @Action(new RegExp(`^${Actions.Remove}category.*`))
+  async removeCategory(@Ctx() ctx: SceneContext) {
+    const categoryId = ctx.callbackQuery.data.split('|')[1];
+
+    await ctx.scene.enter(Scenes.RemoveKnowledgeBaseCategory, {
+      ...ctx.session.__scenes.state,
+      knowledgeBaseCategory: {
+        id: categoryId,
+      },
+    });
   }
 
   // all strings except for strings starting with '/' are valid

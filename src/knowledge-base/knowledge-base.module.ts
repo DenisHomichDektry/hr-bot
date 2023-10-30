@@ -8,6 +8,8 @@ import { KnowledgeBaseScene } from './scenes/knowledge-base.scene';
 import { KnowledgeBaseCategoryService } from './services/knowledge-base-category.service';
 import { AddKnowledgeBaseCategoryScene } from './scenes/add-category.scene';
 import { AddKnowledgeBaseItemScene } from './scenes/add-item.scene';
+import { EditCategoryScene } from './scenes/edit-category.scene';
+import { RemoveCategoryScene } from './scenes/remove-category.scene';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { AddKnowledgeBaseItemScene } from './scenes/add-item.scene';
     KnowledgeBaseCategoryService,
     AddKnowledgeBaseCategoryScene,
     AddKnowledgeBaseItemScene,
+    EditCategoryScene,
+    RemoveCategoryScene,
   ],
 })
 export class KnowledgeBaseModule {}
