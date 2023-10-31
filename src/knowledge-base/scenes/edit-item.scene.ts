@@ -7,11 +7,11 @@ import { Role } from 'src/auth/role.enum';
 
 import * as Keyboards from '../keyboards';
 import { KnowledgeBaseService } from '../services/knowledge-base.service';
-import { isCreateItemDto } from '../types';
+import { isUpdateItemDto } from '../types';
 
 @Roles(Role.Admin)
-@Scene(Scenes.AddKnowledgeBaseItem)
-export class AddKnowledgeBaseItemScene {
+@Scene(Scenes.EditKnowledgeBaseItem)
+export class EditKnowledgeBaseItemScene {
   constructor(private readonly knowledgeBaseService: KnowledgeBaseService) {}
 
   @SceneEnter()
@@ -38,10 +38,8 @@ export class AddKnowledgeBaseItemScene {
     const { knowledgeBaseItem } = ctx.session.__scenes.state;
 
     // first step: link
-    if (knowledgeBaseItem === undefined) {
-      ctx.session.__scenes.state.knowledgeBaseItem = {
-        title: ctx.message.text,
-      };
+    if (knowledgeBaseItem.title === undefined) {
+      ctx.session.__scenes.state.knowledgeBaseItem.title = ctx.message.text;
       await ctx.reply('Provide item link:', {
         reply_markup: {
           keyboard: Keyboards.addKnowledgeBaseItem,
@@ -74,15 +72,15 @@ export class AddKnowledgeBaseItemScene {
     ) {
       ctx.session.__scenes.state.knowledgeBaseItem.category = ctx.message.text;
 
-      if (isCreateItemDto(knowledgeBaseItem)) {
-        const knowledgeBaseItemEntity = await this.knowledgeBaseService.create(
-          knowledgeBaseItem,
-        );
+      if (isUpdateItemDto(knowledgeBaseItem)) {
+        const knowledgeBaseItemEntity = await this.knowledgeBaseService.update({
+          ...knowledgeBaseItem,
+        });
 
         if (knowledgeBaseItemEntity) {
-          await ctx.reply('Knowledge base item created!');
+          await ctx.reply('Knowledge base item updated!');
         } else {
-          await ctx.reply('Knowledge base item creation failed!');
+          await ctx.reply('Knowledge base item is NOT updated!');
         }
       }
 
