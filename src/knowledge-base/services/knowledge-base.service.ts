@@ -7,8 +7,7 @@ import { Actions } from 'src/constants';
 
 import { KnowledgeBaseEntity } from '../entities/knowledge-base.entity';
 import { KnowledgeBaseCategoryService } from './knowledge-base-category.service';
-import { CreateItemDto } from '../dto/create-item.dto';
-import { GetAllItemsDto } from '../dto/get-all-items.dto';
+import { CreateItemDto, GetAllItemsDto, UpdateItemDto } from '../dto';
 
 @Injectable()
 export class KnowledgeBaseService {
@@ -46,6 +45,33 @@ export class KnowledgeBaseService {
     return await this.knowledgeBaseRepository.save(knowledgeBase);
   }
 
+  async update(knowledgeBaseDto: UpdateItemDto) {
+    const category = await this.knowledgeBaseCategoryService.findOne({
+      name: knowledgeBaseDto.category,
+    });
+
+    if (!category) {
+      return null;
+    }
+
+    return await this.knowledgeBaseRepository.update(knowledgeBaseDto.id, {
+      ...knowledgeBaseDto,
+      category,
+    });
+  }
+
+  async remove(id: string) {
+    const knowledgeBaseItem = await this.knowledgeBaseRepository.findOne({
+      where: { id },
+    });
+
+    if (!knowledgeBaseItem) {
+      return null;
+    }
+
+    return await this.knowledgeBaseRepository.remove(knowledgeBaseItem);
+  }
+
   async getKnowledgeBaseKeyboard() {
     const knowledgeBaseCategoryEntities =
       await this.knowledgeBaseCategoryService.findAll();
@@ -71,5 +97,31 @@ export class KnowledgeBaseService {
 
       return acc;
     }, [] as KeyboardButton[][]);
+  }
+
+  async viewItems(getAllItemsDto: GetAllItemsDto) {
+    const items = await this.findAll(getAllItemsDto);
+
+    return items.map((item) => {
+      return {
+        text: item.title + '\n' + item.link,
+        args: {
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: Actions.Edit,
+                  callback_data: Actions.Edit + 'item|' + item.id,
+                },
+                {
+                  text: Actions.Remove,
+                  callback_data: Actions.Remove + 'item|' + item.id,
+                },
+              ],
+            ],
+          },
+        },
+      };
+    });
   }
 }

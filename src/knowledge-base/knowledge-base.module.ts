@@ -4,12 +4,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { KnowledgeBaseEntity } from './entities/knowledge-base.entity';
 import { KnowledgeBaseService } from './services/knowledge-base.service';
 import { KnowledgeBaseCategoryEntity } from './entities/knowledge-base-category.entity';
-import { KnowledgeBaseScene } from './scenes/knowledge-base.scene';
 import { KnowledgeBaseCategoryService } from './services/knowledge-base-category.service';
-import { AddKnowledgeBaseCategoryScene } from './scenes/add-category.scene';
-import { AddKnowledgeBaseItemScene } from './scenes/add-item.scene';
-import { EditCategoryScene } from './scenes/edit-category.scene';
-import { RemoveCategoryScene } from './scenes/remove-category.scene';
+import {
+  AddKnowledgeBaseCategoryScene,
+  AddKnowledgeBaseItemScene,
+  EditCategoryScene,
+  EditKnowledgeBaseItemScene,
+  KnowledgeBaseScene,
+  RemoveCategoryScene,
+  RemoveKnowledgeBaseItemScene,
+  ViewKnowledgeBaseItemsScene,
+} from './scenes';
 
 @Module({
   imports: [
@@ -26,6 +31,9 @@ import { RemoveCategoryScene } from './scenes/remove-category.scene';
     AddKnowledgeBaseItemScene,
     EditCategoryScene,
     RemoveCategoryScene,
+    ViewKnowledgeBaseItemsScene,
+    EditKnowledgeBaseItemScene,
+    RemoveKnowledgeBaseItemScene,
   ],
 })
 export class KnowledgeBaseModule {}

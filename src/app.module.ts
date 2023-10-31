@@ -5,6 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { session } from 'telegraf';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
+import { WinstonModule } from 'nest-winston';
+import * as winston from 'winston';
+const { combine, timestamp, json, errors, align } = winston.format;
+import 'winston-daily-rotate-file';
 
 import { KnowledgeBaseModule } from 'src/knowledge-base/knowledge-base.module';
 import { ormSource, store } from 'src/constants';
@@ -20,6 +24,15 @@ import { AdminModule } from './admin/admin.module';
 import { AppUpdate } from './app.update';
 import { StartScene } from './start-scene.scene';
 
+const fileRotateTransport = new winston.transports.DailyRotateFile({
+  frequency: '6h',
+  filename: 'combined-%DATE%.log',
+  datePattern: 'YYYY-MM-DD',
+  maxFiles: '100',
+  maxSize: '5m',
+  dirname: 'logs',
+});
+
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -29,6 +42,11 @@ import { StartScene } from './start-scene.scene';
     }),
     TypeOrmModule.forRoot(ormSource),
     ScheduleModule.forRoot(),
+    WinstonModule.forRoot({
+      level: 'info',
+      format: combine(timestamp(), errors({ stack: true }), json()),
+      transports: [fileRotateTransport],
+    }),
     KnowledgeBaseModule,
     AuthModule,
     UserModule,

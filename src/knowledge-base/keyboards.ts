@@ -29,3 +29,8 @@ export const removeKnowledgeBaseCategory: KeyboardButton[][] = [
   [{ text: Actions.Confirm }],
   [{ text: Actions.Back }],
 ];
+
+export const removeKnowledgeBaseItem: KeyboardButton[][] = [
+  [{ text: Actions.Confirm }],
+  [{ text: Actions.Back }],
+];

@@ -8,4 +8,7 @@ export enum Scenes {
   EditKnowledgeBaseCategory = 'edit-knowledge-base-category',
   RemoveKnowledgeBaseCategory = 'remove-knowledge-base-category',
   AddKnowledgeBaseItem = 'add-knowledge-base-item',
+  ViewKnowledgeBaseItems = 'view-knowledge-base-items',
+  EditKnowledgeBaseItem = 'edit-knowledge-base-item',
+  RemoveKnowledgeBaseItem = 'remove-knowledge-base-item',
 }

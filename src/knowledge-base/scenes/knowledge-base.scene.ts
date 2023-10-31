@@ -79,7 +79,10 @@ export class KnowledgeBaseScene {
   @Roles(Role.Admin)
   @Hears(Actions.ViewKnowledgeBaseItems)
   async viewItems(@Ctx() ctx: SceneContext) {
-    await ctx.reply('TODO: view item!');
+    await ctx.scene.enter(
+      Scenes.ViewKnowledgeBaseItems,
+      ctx.session.__scenes.state,
+    );
   }
 
   @Hears(Actions.Back)

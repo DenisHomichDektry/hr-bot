@@ -24,6 +24,7 @@ export interface SceneContext extends TelegrafSceneContext {
       state?: {
         management: boolean;
         knowledgeBaseItem?: {
+          id?: string;
           title?: string;
           link?: string;
           category?: string;
