@@ -26,7 +26,7 @@ export class EditKnowledgeBaseItemScene {
 
   @Hears(Actions.Back)
   async leave(@Ctx() ctx: SceneContext) {
-    await ctx.scene.enter(Scenes.KnowledgeBase, {
+    await ctx.scene.enter(Scenes.ViewKnowledgeBaseItems, {
       ...ctx.session.__scenes.state,
       knowledgeBaseItem: undefined,
     });
@@ -84,7 +84,7 @@ export class EditKnowledgeBaseItemScene {
         }
       }
 
-      await ctx.scene.enter(Scenes.KnowledgeBase, {
+      await ctx.scene.enter(Scenes.ViewKnowledgeBaseItems, {
         ...ctx.session.__scenes.state,
         knowledgeBaseItem: undefined,
       });

@@ -7,10 +7,11 @@ import { Role } from 'src/auth/role.enum';
 
 import * as Keyboards from '../keyboards';
 import { UserService } from '../services/user.service';
+import { isUserUpdateDto } from '../types';
 
 @Roles(Role.Admin)
-@Scene(Scenes.AddUser)
-export class AddUserScene {
+@Scene(Scenes.EditUser)
+export class EditUserScene {
   constructor(private readonly userService: UserService) {}
 
   @SceneEnter()
@@ -62,22 +63,24 @@ export class AddUserScene {
     if (user.firstName && user.lastName && !user.role) {
       user.role = ctx.message.text;
 
-      const userEntity = await this.userService.create({
-        ...user,
-      });
+      if (isUserUpdateDto(user)) {
+        const userEntity = await this.userService.update({
+          ...user,
+        });
 
-      if (userEntity) {
-        await ctx.reply('User created!');
-        await ctx.scene.enter(Scenes.User, {
-          ...ctx.session.__scenes.state,
-          user: undefined,
-        });
-      } else {
-        await ctx.reply('User already exists!');
-        await ctx.scene.enter(Scenes.User, {
-          ...ctx.session.__scenes.state,
-          user: undefined,
-        });
+        if (userEntity) {
+          await ctx.reply('User updated!');
+          await ctx.scene.enter(Scenes.User, {
+            ...ctx.session.__scenes.state,
+            user: undefined,
+          });
+        } else {
+          await ctx.reply('User already exists!');
+          await ctx.scene.enter(Scenes.User, {
+            ...ctx.session.__scenes.state,
+            user: undefined,
+          });
+        }
       }
     }
   }

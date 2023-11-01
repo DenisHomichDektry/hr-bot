@@ -14,7 +14,7 @@ export class AuthService {
 
   async validateUser(sceneContext: SceneContext): Promise<boolean> {
     const from = sceneContext.message?.from || sceneContext.callbackQuery?.from;
-    const userRole = await this.getUserRole(from.id);
+    const userRole = await this.getUserRole(from?.id);
 
     if (userRole) {
       sceneContext.state.role = userRole;

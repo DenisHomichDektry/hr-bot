@@ -1,8 +1,8 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString, IsUUID } from 'class-validator';
 
-export class CreateUserDto {
-  @IsNumber()
-  telegramId?: number;
+export class UpdateUserDto {
+  @IsUUID()
+  id: string;
 
   @IsOptional()
   @IsString()

@@ -5,9 +5,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Actions } from 'src/constants';
 
 import { UserEntity } from '../entities/user.entity';
-import { GetUserDto } from '../dto/get-user.dto';
-import { CreateUserDto } from '../dto/create-user.dto';
 import { UserRoleService } from './user-role.service';
+import {
+  CreateUserDto,
+  DeleteUserDto,
+  GetUserDto,
+  UpdateUserDto,
+} from '../dto';
 
 @Injectable()
 export class UserService {
@@ -39,7 +43,7 @@ export class UserService {
       return null;
     }
 
-    const userRole = await this.useRoleService.findOne({ name: 'user' });
+    const userRole = await this.useRoleService.findOne({ name: userDto.role });
 
     const user = this.userRepository.create({
       telegramId: userDto.telegramId,
@@ -47,6 +51,46 @@ export class UserService {
       lastName: userDto.lastName,
       role: userRole,
     });
+    return await this.userRepository.save(user);
+  }
+
+  async remove(deleteDto: DeleteUserDto) {
+    const user = await this.userRepository.findOne({ where: deleteDto });
+
+    if (!user) {
+      return null;
+    }
+
+    return await this.userRepository.remove(user);
+  }
+
+  async update(updateUserDto: UpdateUserDto) {
+    const user = await this.userRepository.findOne({
+      where: { id: updateUserDto.id },
+      relations: ['role'],
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    if (updateUserDto.firstName) {
+      user.firstName = updateUserDto.firstName;
+    }
+
+    if (updateUserDto.lastName) {
+      user.lastName = updateUserDto.lastName;
+    }
+
+    if (updateUserDto.role) {
+      const role = await this.useRoleService.findOne({
+        name: updateUserDto.role,
+      });
+      if (role) {
+        user.role = role;
+      }
+    }
+
     return await this.userRepository.save(user);
   }
 
@@ -64,5 +108,32 @@ export class UserService {
       },
     ]);
     return keyboards;
+  }
+
+  async viewUsers() {
+    const users = await this.findAll();
+
+    return users.map((user) => {
+      return {
+        text:
+          user.firstName + ' ' + user.lastName + '\nRole: ' + user.role.name,
+        args: {
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: Actions.Edit,
+                  callback_data: Actions.Edit + 'user|' + user.id,
+                },
+                {
+                  text: Actions.Remove,
+                  callback_data: Actions.Remove + 'user|' + user.id,
+                },
+              ],
+            ],
+          },
+        },
+      };
+    });
   }
 }
