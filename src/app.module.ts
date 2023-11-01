@@ -23,6 +23,7 @@ import { GlobalExceptionFilter } from './global-exception.filter';
 import { AdminModule } from './admin/admin.module';
 import { AppUpdate } from './app.update';
 import { StartScene } from './start-scene.scene';
+import { OnboardingModule } from './onboarding/onboarding.module';
 
 const fileRotateTransport = new winston.transports.DailyRotateFile({
   frequency: '6h',
@@ -51,6 +52,7 @@ const fileRotateTransport = new winston.transports.DailyRotateFile({
     AuthModule,
     UserModule,
     AdminModule,
+    OnboardingModule,
   ],
   controllers: [AppController],
   providers: [
