@@ -26,33 +26,47 @@ export class UserScene {
   async userShared(@Ctx() ctx: SceneContext) {
     await ctx.scene.enter(Scenes.AddUser, {
       ...ctx.session.__scenes.state,
-      user_id: ctx.message.user_shared.user_id,
+      user: {
+        telegramId: ctx.message.user_shared.user_id,
+      },
     });
   }
 
   @Hears(Actions.ViewUsers)
   async viewUsers(@Ctx() ctx: SceneContext) {
-    const users = await this.userService.findAll();
-    for (const user of users) {
-      await ctx.reply(
-        `${user.firstName} ${user.lastName}\nRole: ${user.role.name}`,
-        {
-          reply_markup: {
-            inline_keyboard: Keyboards.userView,
-          },
-        },
-      );
+    const responseData = await this.userService.viewUsers();
+
+    for (const data of responseData) {
+      await ctx.reply(data.text, data.args);
+    }
+
+    if (responseData.length === 0) {
+      await ctx.reply('No users found!');
     }
   }
 
-  @Action(Actions.Edit)
+  @Action(new RegExp(`^${Actions.Edit}user.*`))
   async edit(@Ctx() ctx: SceneContext) {
-    await ctx.reply('TODO: edit user');
+    const userId = ctx.callbackQuery.data.split('|')[1];
+
+    await ctx.scene.enter(Scenes.EditUser, {
+      ...ctx.session.__scenes.state,
+      user: {
+        id: userId,
+      },
+    });
   }
 
-  @Action(Actions.Remove)
-  async delete(@Ctx() ctx: SceneContext) {
-    await ctx.reply('TODO: delete user');
+  @Action(new RegExp(`^${Actions.Remove}user.*`))
+  async remove(@Ctx() ctx: SceneContext) {
+    const userId = ctx.callbackQuery.data.split('|')[1];
+
+    await ctx.scene.enter(Scenes.RemoveUser, {
+      ...ctx.session.__scenes.state,
+      user: {
+        id: userId,
+      },
+    });
   }
 
   @Hears(Actions.Back)

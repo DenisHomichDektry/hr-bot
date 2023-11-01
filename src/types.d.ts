@@ -33,8 +33,9 @@ export interface SceneContext extends TelegrafSceneContext {
           id?: string;
           name?: string;
         };
-        user_id?: number;
         user?: {
+          id?: string;
+          telegramId?: number;
           firstName?: string;
           lastName?: string;
           role?: 'admin' | 'user';

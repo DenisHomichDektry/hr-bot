@@ -38,3 +38,8 @@ export const addUserEnter: KeyboardButton[][] = [
     },
   ],
 ];
+
+export const removeUser: KeyboardButton[][] = [
+  [{ text: Actions.Confirm }],
+  [{ text: Actions.Back }],
+];

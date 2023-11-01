@@ -3,6 +3,8 @@ export enum Scenes {
   Admin = 'admin',
   User = 'user',
   AddUser = 'add-user',
+  EditUser = 'edit-user',
+  RemoveUser = 'remove-user',
   KnowledgeBase = 'knowledge-base',
   AddKnowledgeBaseCategory = 'add-knowledge-base-category',
   EditKnowledgeBaseCategory = 'edit-knowledge-base-category',

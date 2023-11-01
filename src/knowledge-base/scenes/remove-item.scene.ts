@@ -28,7 +28,7 @@ export class RemoveKnowledgeBaseItemScene {
 
   @Hears(Actions.Back)
   async leave(@Ctx() ctx: SceneContext) {
-    await ctx.scene.enter(Scenes.KnowledgeBase, {
+    await ctx.scene.enter(Scenes.ViewKnowledgeBaseItems, {
       ...ctx.session.__scenes.state,
       knowledgeBaseCategory: undefined,
     });
@@ -45,7 +45,7 @@ export class RemoveKnowledgeBaseItemScene {
     } else {
       await ctx.reply('Item successfully deleted!');
     }
-    await ctx.scene.enter(Scenes.KnowledgeBase, {
+    await ctx.scene.enter(Scenes.ViewKnowledgeBaseItems, {
       ...ctx.session.__scenes.state,
       knowledgeBaseCategory: undefined,
     });
