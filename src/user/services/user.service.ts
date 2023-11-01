@@ -43,7 +43,7 @@ export class UserService {
       return null;
     }
 
-    const userRole = await this.useRoleService.findOne({ name: 'user' });
+    const userRole = await this.useRoleService.findOne({ name: userDto.role });
 
     const user = this.userRepository.create({
       telegramId: userDto.telegramId,
