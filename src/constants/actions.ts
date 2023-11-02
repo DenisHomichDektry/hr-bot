@@ -18,4 +18,6 @@ export enum Actions {
   RemoveKnowledgeBaseCategory = 'Remove Category',
   ViewKnowledgeBaseCategories = 'View Categories',
   Confirm = 'Confirm',
+  Done = 'Done',
+  Assistance = 'Assistance',
 }

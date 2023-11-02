@@ -35,6 +35,6 @@ export class StartScene {
 
   @Hears(Actions.Onboarding)
   async onboarding(@Ctx() ctx: SceneContext) {
-    await ctx.reply('TODO: onboarding!');
+    await ctx.scene.enter(Scenes.Onboarding);
   }
 }

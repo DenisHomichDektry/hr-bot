@@ -74,14 +74,6 @@ export class UserService {
       return null;
     }
 
-    if (updateUserDto.firstName) {
-      user.firstName = updateUserDto.firstName;
-    }
-
-    if (updateUserDto.lastName) {
-      user.lastName = updateUserDto.lastName;
-    }
-
     if (updateUserDto.role) {
       const role = await this.useRoleService.findOne({
         name: updateUserDto.role,
@@ -91,7 +83,9 @@ export class UserService {
       }
     }
 
-    return await this.userRepository.save(user);
+    return await this.userRepository.save(
+      this.userRepository.merge(user, { ...updateUserDto, role: user.role }),
+    );
   }
 
   async getUserRoleKeyboards() {
