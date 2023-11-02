@@ -9,6 +9,7 @@ $ yarn install
 $ yarn schema:sync # sync database schema if needed
 ```
 
+
 ## Running the app
 
 ```bash
