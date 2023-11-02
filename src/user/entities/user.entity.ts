@@ -25,6 +25,12 @@ export class UserEntity {
   @ManyToOne(() => UserRoleEntity)
   role: UserRoleEntity;
 
+  @Column({ default: false })
+  onboardingCompleted: boolean;
+
+  @Column({ default: null })
+  onboardingStep: number;
+
   @CreateDateColumn()
   createdAt: string;
 }

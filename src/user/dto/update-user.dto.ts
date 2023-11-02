@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsNumber, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class UpdateUserDto {
   @IsUUID()
@@ -15,4 +15,8 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   role?: 'admin' | 'user';
+
+  @IsOptional()
+  @IsNumber()
+  onboardingStep?: number;
 }
