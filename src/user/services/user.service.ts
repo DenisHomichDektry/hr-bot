@@ -25,7 +25,7 @@ export class UserService {
 
   async findOne(getUserDto: GetUserDto) {
     return this.userRepository.findOne({
-      where: getUserDto,
+      where: [{ id: getUserDto.id }, { telegramId: getUserDto.telegramId }],
       relations: ['role'],
     });
   }
@@ -90,9 +90,12 @@ export class UserService {
       }
     }
 
-    return await this.userRepository.save(
+    const userEntity = await this.userRepository.save(
       this.userRepository.merge(user, { ...updateUserDto, role: user.role }),
     );
+    this.authService.clearCache();
+
+    return userEntity;
   }
 
   async getUserRoleKeyboards() {

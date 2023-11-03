@@ -24,7 +24,10 @@ export class NotificationService {
   ) {}
 
   async create(dto: CreateNotificationDto) {
-    const user = await this.userService.findOne({ id: dto.userId });
+    const user = await this.userService.findOne({
+      id: dto.userId,
+      telegramId: dto.telegramId,
+    });
 
     if (!user) {
       return null;
@@ -52,8 +55,9 @@ export class NotificationService {
 
     if (dto?.userId) where.push({ user: { id: dto.userId } });
     if (dto?.telegramId) where.push({ user: { telegramId: dto.telegramId } });
-    if (dto?.onboardingStepId)
+    if (dto?.onboardingStepId) {
       where.push({ onboardingStep: { id: dto.onboardingStepId } });
+    }
 
     return await this.notificationRepository.find({
       relations: ['user', 'onboardingStep'],

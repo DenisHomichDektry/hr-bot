@@ -16,21 +16,22 @@ export class OnboardingScene {
       ctx.message.from.id,
     );
 
-    await ctx.reply('Welcome to the onboarding process!', {
-      reply_markup: {
-        keyboard: Keyboards.OnboardingEnter,
-        resize_keyboard: true,
-      },
-    });
+    await ctx.reply('Welcome to the onboarding process!');
 
     if (step) {
-      await ctx.reply(`${step.title}\n\n${step.link}`);
+      await ctx.reply(`${step.title}\n\n${step.link}`, {
+        reply_markup: {
+          keyboard: Keyboards.OnboardingEnter,
+          resize_keyboard: true,
+        },
+      });
       await this.onboardingService.scheduleNotifications({
         telegramId: ctx.message.from.id,
         onboardingStep: step,
       });
     } else {
       await ctx.reply('No steps found');
+      await ctx.scene.enter(Scenes.Start);
     }
   }
 
