@@ -76,7 +76,7 @@ export class NotificationService {
     );
   }
 
-  @Cron('*/5 * * * * *')
+  @Cron('*/60 * * * * *')
   async sendNotifications() {
     console.log('check notifications');
     const notifications = await this.findAll();

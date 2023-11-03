@@ -35,7 +35,7 @@ export class RemoveUserScene {
   }
 
   @Hears(Actions.Confirm)
-  async deleteItem(@Ctx() ctx: SceneContext) {
+  async deleteUser(@Ctx() ctx: SceneContext) {
     const category = await this.userService.remove({
       id: ctx.session.__scenes.state.user.id,
     });
