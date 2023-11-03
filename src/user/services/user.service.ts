@@ -53,7 +53,10 @@ export class UserService {
       lastName: userDto.lastName,
       role: userRole,
     });
-    return await this.userRepository.save(user);
+
+    const userEntity = await this.userRepository.save(user);
+    this.authService.clearCache();
+    return userEntity;
   }
 
   async remove(deleteDto: DeleteUserDto) {
