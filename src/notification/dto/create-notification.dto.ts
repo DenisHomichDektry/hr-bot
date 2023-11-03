@@ -1,4 +1,4 @@
-import { IsDateString, IsUUID } from 'class-validator';
+import { IsDateString, IsNumber, IsUUID } from 'class-validator';
 
 export class CreateNotificationDto {
   @IsDateString()
@@ -6,6 +6,9 @@ export class CreateNotificationDto {
 
   @IsUUID()
   userId: string;
+
+  @IsNumber()
+  telegramId?: number;
 
   @IsUUID()
   onboardingStepId: string;

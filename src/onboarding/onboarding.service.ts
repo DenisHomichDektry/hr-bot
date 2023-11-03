@@ -28,14 +28,29 @@ export class OnboardingService {
   }
 
   async getOnboardingStep(userTelegramId: number) {
-    const user = await this.userService.findOne({ telegramId: userTelegramId });
+    const user = await this.userService.findOne({
+      telegramId: userTelegramId,
+    });
 
     if (!user) {
       return null;
     }
 
+    const order = user.onboardingStep !== null ? user.onboardingStep : 0;
+
+    if (user.onboardingStep === null) {
+      const updatedUser = await this.userService.update({
+        id: user.id,
+        onboardingStep: order,
+      });
+
+      if (!updatedUser) {
+        return null;
+      }
+    }
+
     return await this.findOne({
-      order: user.onboardingStep >= 0 ? user.onboardingStep : 0,
+      order,
     });
   }
 
@@ -59,6 +74,10 @@ export class OnboardingService {
     const onboardingStep = await this.getOnboardingStep(userTelegramId);
 
     if (!onboardingStep) {
+      const existingNotifications = await this.notificationService.findAll({
+        telegramId: userTelegramId,
+      });
+      await this.notificationService.remove(existingNotifications);
       return null;
     }
 
@@ -88,6 +107,7 @@ export class OnboardingService {
     for (const interval of dto.onboardingStep.notificationIntervals) {
       await this.notificationService.create({
         userId: dto.userId,
+        telegramId: dto.telegramId,
         onboardingStepId: dto.onboardingStep.id,
         sendAt: new Date(latestNotificationTime + interval).toISOString(),
       });
