@@ -15,10 +15,6 @@ export class OnboardingScene {
     const step = await this.onboardingService.getOnboardingStep(
       ctx.message.from.id,
     );
-    await this.onboardingService.scheduleNotifications({
-      telegramId: ctx.message.from.id,
-      onboardingStep: step,
-    });
 
     await ctx.reply('Welcome to the onboarding process!', {
       reply_markup: {
@@ -29,6 +25,10 @@ export class OnboardingScene {
 
     if (step) {
       await ctx.reply(`${step.title}\n\n${step.link}`);
+      await this.onboardingService.scheduleNotifications({
+        telegramId: ctx.message.from.id,
+        onboardingStep: step,
+      });
     } else {
       await ctx.reply('No steps found');
     }

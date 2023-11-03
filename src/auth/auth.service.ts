@@ -1,14 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
-import { UserService } from 'src/user/services/user.service';
 import { SceneContext } from 'src/types';
+import { UserEntity } from 'src/user/entities/user.entity';
 
 import { ICachedUsers } from './types';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+  ) {}
 
   private cachedUsers: ICachedUsers = {};
 
@@ -29,7 +34,10 @@ export class AuthService {
       return this.cachedUsers[telegramId];
     }
 
-    const user = await this.userService.findOne({ telegramId });
+    const user = await this.userRepository.findOne({
+      relations: ['role'],
+      where: { telegramId },
+    });
 
     if (user) {
       this.cachedUsers[telegramId] = user.role.name;

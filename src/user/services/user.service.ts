@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Actions } from 'src/constants';
+import { AuthService } from 'src/auth/auth.service';
 
 import { UserEntity } from '../entities/user.entity';
 import { UserRoleService } from './user-role.service';
@@ -19,6 +20,7 @@ export class UserService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     private readonly useRoleService: UserRoleService,
+    private readonly authService: AuthService,
   ) {}
 
   async findOne(getUserDto: GetUserDto) {
@@ -51,7 +53,10 @@ export class UserService {
       lastName: userDto.lastName,
       role: userRole,
     });
-    return await this.userRepository.save(user);
+
+    const userEntity = await this.userRepository.save(user);
+    this.authService.clearCache();
+    return userEntity;
   }
 
   async remove(deleteDto: DeleteUserDto) {
@@ -61,7 +66,9 @@ export class UserService {
       return null;
     }
 
-    return await this.userRepository.remove(user);
+    const deletedEntity = await this.userRepository.remove(user);
+    this.authService.clearCache();
+    return deletedEntity;
   }
 
   async update(updateUserDto: UpdateUserDto) {
