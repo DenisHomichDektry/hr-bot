@@ -7,6 +7,7 @@ import { NotificationModule } from 'src/notification/notification.module';
 import { OnboardingService } from './onboarding.service';
 import { OnboardingEntity } from './onboarding.entity';
 import { OnboardingScene } from './onboarding.scene';
+import { OnboardingController } from './onboarding.controller';
 
 @Module({
   imports: [
@@ -16,5 +17,6 @@ import { OnboardingScene } from './onboarding.scene';
   ],
   providers: [OnboardingService, OnboardingScene],
   exports: [OnboardingService],
+  controllers: [OnboardingController],
 })
 export class OnboardingModule {}

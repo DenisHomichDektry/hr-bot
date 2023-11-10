@@ -31,7 +31,7 @@ export class AdminScene {
 
   @Hears(Actions.OnboardingManagement)
   async onboardingManagement(@Ctx() ctx: SceneContext) {
-    await ctx.reply('TODO: add onboarding management');
+    await ctx.scene.enter(Scenes.Onboarding, { management: true });
   }
 
   @Hears(Actions.Back)

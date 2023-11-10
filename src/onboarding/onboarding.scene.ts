@@ -12,26 +12,40 @@ export class OnboardingScene {
 
   @SceneEnter()
   async enter(@Ctx() ctx: SceneContext) {
-    const step = await this.onboardingService.getOnboardingStep(
-      ctx.message.from.id,
-    );
-
-    await ctx.reply('Welcome to the onboarding process!');
-
-    if (step) {
-      await ctx.reply(`${step.title}\n\n${step.link}`, {
+    if (ctx.session.__scenes.state.management) {
+      await ctx.reply('Open web app to manage onboarding flow.', {
         reply_markup: {
-          keyboard: Keyboards.OnboardingEnter,
+          inline_keyboard: Keyboards.onboardingManagementInline,
+        },
+      });
+      await ctx.reply('Press "Back" when you finish', {
+        reply_markup: {
+          keyboard: Keyboards.onboardingManagement,
           resize_keyboard: true,
         },
       });
-      await this.onboardingService.scheduleNotifications({
-        telegramId: ctx.message.from.id,
-        onboardingStep: step,
-      });
     } else {
-      await ctx.reply('No steps found');
-      await ctx.scene.enter(Scenes.Start);
+      const step = await this.onboardingService.getOnboardingStep(
+        ctx.message.from.id,
+      );
+
+      await ctx.reply('Welcome to the onboarding process!');
+
+      if (step) {
+        await ctx.reply(`${step.title}\n\n${step.link}`, {
+          reply_markup: {
+            keyboard: Keyboards.OnboardingEnter,
+            resize_keyboard: true,
+          },
+        });
+        await this.onboardingService.scheduleNotifications({
+          telegramId: ctx.message.from.id,
+          onboardingStep: step,
+        });
+      } else {
+        await ctx.reply('No steps found');
+        await ctx.scene.enter(Scenes.Start);
+      }
     }
   }
 
@@ -51,6 +65,10 @@ export class OnboardingScene {
 
   @Hears(Actions.Back)
   async leave(@Ctx() ctx: SceneContext) {
-    await ctx.scene.enter(Scenes.Start);
+    if (ctx.session.__scenes.state.management) {
+      await ctx.scene.enter(Scenes.Admin);
+    } else {
+      await ctx.scene.enter(Scenes.Start);
+    }
   }
 }
