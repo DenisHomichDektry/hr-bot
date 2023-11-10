@@ -13,7 +13,7 @@ export const onboardingManagementInline: InlineKeyboardButton[][] = [
     {
       text: Actions.LaunchWebApp,
       web_app: {
-        url: 'https://innocent-skink-severely.ngrok-free.app',
+        url: process.env.WEB_APP_URL,
       },
     },
   ],
