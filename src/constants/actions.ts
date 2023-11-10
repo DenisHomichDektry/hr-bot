@@ -20,4 +20,5 @@ export enum Actions {
   Confirm = 'Confirm',
   Done = 'Done',
   Assistance = 'Assistance',
+  LaunchWebApp = 'Launch web app',
 }

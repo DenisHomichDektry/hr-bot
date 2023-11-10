@@ -1,12 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { InsertResult } from 'typeorm/query-builder/result/InsertResult';
+import { DeleteResult } from 'typeorm/query-builder/result/DeleteResult';
 
 import { UserService } from 'src/user/services/user.service';
 import { NotificationService } from 'src/notification/notification.service';
 
 import { OnboardingEntity } from './onboarding.entity';
-import { ScheduleNotificationsDto, GetOnboardingStepDto } from './dto';
+import {
+  ScheduleNotificationsDto,
+  GetOnboardingStepDto,
+  UpsertOnboardingItemDto,
+} from './dto';
 
 @Injectable()
 export class OnboardingService {
@@ -18,13 +24,34 @@ export class OnboardingService {
   ) {}
 
   async findAll(): Promise<OnboardingEntity[]> {
-    return await this.onboardingRepository.find();
+    return await this.onboardingRepository.find({
+      order: {
+        order: 'ASC',
+      },
+    });
   }
 
   async findOne(dto: GetOnboardingStepDto): Promise<OnboardingEntity> {
     return await this.onboardingRepository.findOne({
       where: dto,
     });
+  }
+
+  async upsert(items: UpsertOnboardingItemDto[]): Promise<InsertResult> {
+    return await this.onboardingRepository.upsert(items, {
+      conflictPaths: ['id'],
+      skipUpdateIfNoValuesChanged: true,
+      upsertType: 'on-conflict-do-update',
+    });
+  }
+
+  async delete(id: string): Promise<DeleteResult> {
+    await this.onboardingRepository.delete(id);
+    const items = await this.findAll();
+    items.forEach((item, index) => {
+      item.order = index;
+    });
+    return await this.upsert(items);
   }
 
   async getOnboardingStep(userTelegramId: number) {

@@ -19,7 +19,11 @@ export class OnboardingEntity {
   @Column()
   order: number;
 
-  @Column('int', { array: true, nullable: true })
+  @Column('int', {
+    array: true,
+    nullable: true,
+    default: [600000, 600000, 600000],
+  })
   notificationIntervals: number[]; // Store durations in milliseconds
 
   @CreateDateColumn()

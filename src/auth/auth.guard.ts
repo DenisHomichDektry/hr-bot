@@ -11,6 +11,6 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const sceneContext = context.getArgs()[0] as SceneContext;
 
-    return await this.authService.validateUser(sceneContext);
+    return await this.authService.validateUser(sceneContext, context);
   }
 }
