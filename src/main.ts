@@ -7,8 +7,8 @@ import { AppModule } from './app.module';
 import * as process from 'process';
 
 const httpsOptions = {
-  key: fs.readFileSync('/etc/letsencrypt/live/hr-bot.ddns.net/fullchain.pem'),
-  cert: fs.readFileSync('/etc/letsencrypt/live/hr-bot.ddns.net/privkey.pem'),
+  key: fs.readFileSync('/etc/letsencrypt/live/hr-bot.ddns.net/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/hr-bot.ddns.net/fullchain.pem'),
 };
 
 async function bootstrap() {
