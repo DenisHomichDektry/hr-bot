@@ -2,13 +2,20 @@ import { Update, Ctx, Start, Help, On } from 'nestjs-telegraf';
 
 import { Scenes } from 'src/constants';
 
+import { AppService } from './app.service';
 import { SceneContext } from './types';
 
 @Update()
 export class AppUpdate {
+  constructor(private readonly appService: AppService) {}
+
   @Start()
   async start(@Ctx() ctx: SceneContext) {
     await ctx.reply('Welcome to the Dektry Bot!');
+    this.appService.updateUsername({
+      telegramId: ctx.from.id,
+      username: ctx.from.username,
+    });
     await ctx.scene.enter(Scenes.Start);
   }
 

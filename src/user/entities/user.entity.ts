@@ -22,6 +22,9 @@ export class UserEntity {
   @Column()
   telegramId: number;
 
+  @Column({ default: null })
+  username: string;
+
   @ManyToOne(() => UserRoleEntity)
   role: UserRoleEntity;
 

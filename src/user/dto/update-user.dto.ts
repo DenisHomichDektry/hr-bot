@@ -19,4 +19,8 @@ export class UpdateUserDto {
   @IsOptional()
   @IsNumber()
   onboardingStep?: number;
+
+  @IsOptional()
+  @IsString()
+  username?: string;
 }

@@ -73,11 +73,10 @@ export class NotificationService {
     );
   }
 
-  sendNotification(notification: NotificationEntity) {
-    this.bot.telegram.sendMessage(
-      notification.user.telegramId,
-      `Hey! It's time to complete the step "${notification.onboardingStep.title}"\n\n${notification.onboardingStep.link}`,
-    );
+  async sendNotification(telegramId: number, text: string) {
+    await this.bot.telegram.sendMessage(telegramId, text, {
+      parse_mode: 'MarkdownV2',
+    });
   }
 
   @Cron('*/60 * * * * *')
@@ -93,7 +92,10 @@ export class NotificationService {
       const { sendAt } = notification;
 
       if (new Date(sendAt).getTime() < Date.now()) {
-        this.sendNotification(notification);
+        this.sendNotification(
+          notification.user.telegramId,
+          `Hey! It's time to complete the step "${notification.onboardingStep.title}"\n\n${notification.onboardingStep.link}`,
+        );
         this.remove(notification);
       }
     });

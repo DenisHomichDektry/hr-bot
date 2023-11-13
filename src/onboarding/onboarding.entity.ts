@@ -2,8 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
+import { UserEntity } from 'src/user/entities/user.entity';
 
 @Entity('onboarding')
 export class OnboardingEntity {
@@ -26,6 +29,9 @@ export class OnboardingEntity {
   })
   notificationIntervals: number[]; // Store durations in milliseconds
 
-  @CreateDateColumn()
+  @ManyToOne(() => UserEntity, { nullable: true })
+  reportTo: UserEntity;
+
+  @CreateDateColumn({ nullable: true })
   createdAt: string;
 }
