@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { UserService } from 'src/user/services/user.service';
 
 import { FeedbackEntity } from './feedback.entity';
-import { IFeedbackCreate } from './types';
+import { IFeedbackCreate, IUserFeedbacks } from './types';
 
 @Injectable()
 export class FeedbackService {
@@ -26,10 +26,33 @@ export class FeedbackService {
     });
   }
 
+  async findUserFeedbacks(user: IUserFeedbacks): Promise<FeedbackEntity[]> {
+    return await this.feedbackRepository.find({
+      relations: ['user'],
+      where: [
+        {
+          user: {
+            id: 'userId' in user ? user.userId : null,
+          },
+        },
+        {
+          user: {
+            telegramId: 'telegramId' in user ? user.telegramId : null,
+          },
+        },
+      ],
+      order: {
+        user: {
+          firstName: 'ASC',
+        },
+      },
+    });
+  }
+
   async create(feedback: IFeedbackCreate): Promise<FeedbackEntity> {
     const user = await this.userService.findOne({
-      telegramId: 'telegramId' in feedback && feedback.telegramId,
-      id: 'userId' in feedback && feedback.userId,
+      telegramId: 'telegramId' in feedback ? feedback.telegramId : null,
+      id: 'userId' in feedback ? feedback.userId : null,
     });
 
     if (!user) {

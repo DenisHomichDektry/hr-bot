@@ -14,4 +14,5 @@ export enum Scenes {
   EditKnowledgeBaseItem = 'edit-knowledge-base-item',
   RemoveKnowledgeBaseItem = 'remove-knowledge-base-item',
   Onboarding = 'onboarding',
+  Feedback = 'feedback',
 }

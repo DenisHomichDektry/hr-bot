@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { UserModule } from 'src/user/user.module';
 import { NotificationModule } from 'src/notification/notification.module';
+import { FeedbackModule } from 'src/feedback/feedback.module';
 
 import { OnboardingService } from './onboarding.service';
 import { OnboardingEntity } from './onboarding.entity';
@@ -14,6 +15,7 @@ import { OnboardingController } from './onboarding.controller';
     TypeOrmModule.forFeature([OnboardingEntity]),
     UserModule,
     NotificationModule,
+    FeedbackModule,
   ],
   providers: [OnboardingService, OnboardingScene],
   exports: [OnboardingService],

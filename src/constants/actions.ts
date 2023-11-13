@@ -21,4 +21,9 @@ export enum Actions {
   Done = 'Done',
   Assistance = 'Assistance',
   LaunchWebApp = 'Launch web app',
+  OneStar = '⭐️☆☆☆☆',
+  TwoStars = '⭐️⭐️☆☆☆',
+  ThreeStars = '⭐️⭐️⭐️☆☆',
+  FourStars = '⭐️⭐️⭐️⭐️☆',
+  FiveStars = '⭐️⭐️⭐️⭐️⭐️',
 }
