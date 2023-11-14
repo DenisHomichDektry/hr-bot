@@ -14,6 +14,10 @@ export class FeedbackScene {
   async enter(@Ctx() ctx: SceneContext) {
     if (ctx.session.__scenes.state.management) {
       const feedbacks = await this.feedbackService.viewFeedbacks();
+      if (feedbacks.length === 0) {
+        await ctx.reply('No feedbacks found!');
+      }
+
       for (const feedback of feedbacks) {
         await ctx.reply(feedback);
       }
