@@ -12,11 +12,19 @@ export class FeedbackScene {
 
   @SceneEnter()
   async enter(@Ctx() ctx: SceneContext) {
-    await ctx.reply('Please, leave feedback on Onboarding process.', {
-      reply_markup: {
-        keyboard: Keyboards.feedbackEnter,
-      },
-    });
+    if (ctx.session.__scenes.state.management) {
+      const feedbacks = await this.feedbackService.viewFeedbacks();
+      for (const feedback of feedbacks) {
+        await ctx.reply(feedback);
+      }
+      await ctx.scene.enter(Scenes.Admin);
+    } else {
+      await ctx.reply('Please, leave feedback on Onboarding process.', {
+        reply_markup: {
+          keyboard: Keyboards.feedbackEnter,
+        },
+      });
+    }
   }
 
   @Hears(feedbackRange)

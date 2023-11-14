@@ -34,6 +34,11 @@ export class AdminScene {
     await ctx.scene.enter(Scenes.Onboarding, { management: true });
   }
 
+  @Hears(Actions.ViewFeedback)
+  async viewFeedback(@Ctx() ctx: SceneContext) {
+    await ctx.scene.enter(Scenes.Feedback, { management: true });
+  }
+
   @Hears(Actions.Back)
   async leave(@Ctx() ctx: SceneContext) {
     await ctx.scene.enter(Scenes.Start);

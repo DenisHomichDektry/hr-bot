@@ -7,6 +7,7 @@ export const enter: KeyboardButton[][] = [
     {
       text: Actions.OnboardingManagement,
     },
-    { text: Actions.Back },
+    { text: Actions.ViewFeedback },
   ],
+  [{ text: Actions.Back }],
 ];

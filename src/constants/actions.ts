@@ -26,4 +26,5 @@ export enum Actions {
   ThreeStars = '⭐️⭐️⭐️☆☆',
   FourStars = '⭐️⭐️⭐️⭐️☆',
   FiveStars = '⭐️⭐️⭐️⭐️⭐️',
+  ViewFeedback = 'View Feedback',
 }

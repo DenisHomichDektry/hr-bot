@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { UserService } from 'src/user/services/user.service';
+import { Actions, feedbackRange } from 'src/constants';
 
 import { FeedbackEntity } from './feedback.entity';
 import { IFeedbackCreate, IUserFeedbacks } from './types';
@@ -65,5 +66,19 @@ export class FeedbackService {
     });
 
     return await this.feedbackRepository.save(feedbackEntity);
+  }
+
+  async viewFeedbacks() {
+    const feedbacks = await this.findAll();
+
+    return feedbacks.map((feedback) => {
+      return (
+        feedback.user.firstName +
+        ' ' +
+        feedback.user.lastName +
+        '\n\n' +
+        feedbackRange[feedback.value]
+      );
+    });
   }
 }
