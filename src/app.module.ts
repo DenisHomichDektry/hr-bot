@@ -26,6 +26,7 @@ import { StartScene } from './start-scene.scene';
 import { OnboardingModule } from './onboarding/onboarding.module';
 import { NotificationModule } from './notification/notification.module';
 import { FeedbackModule } from './feedback/feedback.module';
+import { MessageModule } from './message/message.module';
 
 const fileRotateTransport = new winston.transports.DailyRotateFile({
   frequency: '6h',
@@ -57,6 +58,7 @@ const fileRotateTransport = new winston.transports.DailyRotateFile({
     OnboardingModule,
     NotificationModule,
     FeedbackModule,
+    MessageModule,
   ],
   controllers: [AppController],
   providers: [

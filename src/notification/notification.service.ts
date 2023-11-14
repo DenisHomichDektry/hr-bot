@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { InjectBot } from 'nestjs-telegraf';
 import { Telegraf } from 'telegraf';
 import { Cron } from '@nestjs/schedule';
+import { markdownv2 } from 'telegram-format';
 
 import { UserService } from 'src/user/services/user.service';
 import { OnboardingEntity } from 'src/onboarding/onboarding.entity';
@@ -92,9 +93,11 @@ export class NotificationService {
       const { sendAt } = notification;
 
       if (new Date(sendAt).getTime() < Date.now()) {
+        const text = `Hey! It's time to complete the step "${notification.onboardingStep.title}"\n\n${notification.onboardingStep.link}`;
+
         this.sendNotification(
           notification.user.telegramId,
-          `Hey! It's time to complete the step "${notification.onboardingStep.title}"\n\n${notification.onboardingStep.link}`,
+          markdownv2.escape(text),
         );
         this.remove(notification);
       }

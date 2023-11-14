@@ -4858,6 +4858,11 @@ telegraf@^4.14.0:
     safe-compare "^1.1.4"
     sandwich-stream "^2.0.2"
 
+telegram-format@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/telegram-format/-/telegram-format-2.1.0.tgz#11ab7e4e86955ba2d98fd865f75347bac1d995b2"
+  integrity sha512-V2thkhKzcNVL26h/ANeat/Z+AXBaDGoizs4cab6Kpq/w+d+Ai6M/AFFkuBwvCkZXqb+7UW2vt3Dko5+kKcOIHg==
+
 terser-webpack-plugin@^5.3.7:
   version "5.3.9"
   resolved "https://registry.yarnpkg.com/terser-webpack-plugin/-/terser-webpack-plugin-5.3.9.tgz#832536999c51b46d468067f9e37662a3b96adfe1"

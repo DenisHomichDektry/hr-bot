@@ -8,16 +8,19 @@ import {
 
 import { UserEntity } from 'src/user/entities/user.entity';
 
-@Entity('feedback')
-export class FeedbackEntity {
+@Entity('message')
+export class MessageEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @ManyToOne(() => UserEntity)
-  user: UserEntity;
+  from: UserEntity;
+
+  @ManyToOne(() => UserEntity)
+  to: UserEntity;
 
   @Column()
-  value: number;
+  text: string;
 
   @CreateDateColumn()
   createdAt: string;
