@@ -6,9 +6,11 @@ import { markdownv2 } from 'telegram-format';
 import { UserService } from 'src/user/services/user.service';
 import { NotificationService } from 'src/notification/notification.service';
 import { OnboardingEntity } from 'src/onboarding/onboarding.entity';
+import { Actions } from 'src/constants';
 
 import { MessageEntity } from './message.entity';
 import { IMessageCreate, TFindAllMessages } from './types';
+import * as Keyboards from './keyboards';
 
 @Injectable()
 export class MessageService {
@@ -51,7 +53,6 @@ export class MessageService {
 
   async sendAssistanceMessage(text: string, fromTelegramId: number) {
     const from = await this.userService.findOne({ telegramId: fromTelegramId });
-
     const onboardingStep = await this.onboardingRepository.findOne({
       where: {
         order: from.onboardingStep,
@@ -62,17 +63,15 @@ export class MessageService {
       id: onboardingStep.reportTo.id,
     });
 
-    if (!from || !to) {
-      return null;
-    }
-
-    const messageEntity = this.messageRepository.create({
+    const messageEntity = this.create({
       text: markdownv2.escape(text),
-      from,
+      from: {
+        telegramId: fromTelegramId,
+      },
       to,
     });
 
-    await this.messageRepository.save(messageEntity);
+    if (!messageEntity) return null;
 
     const notificationText = `User ${markdownv2.bold(
       markdownv2.escape(from.firstName),
@@ -81,6 +80,43 @@ export class MessageService {
     )} requested help with onboarding step "${markdownv2.escape(
       onboardingStep.title,
     )}"\\.\n\nMessage:\n\n${markdownv2.escape(text)}`;
+
+    await this.notificationService.sendNotification(
+      to.telegramId,
+      notificationText,
+      {
+        inline_keyboard: Keyboards.responseToAssistance.map((keyboardRow) =>
+          keyboardRow.map((button) => ({
+            ...button,
+            callback_data: Actions.Reply + from.telegramId,
+          })),
+        ),
+      },
+    );
+
+    return messageEntity;
+  }
+
+  async sendReplyMessage(
+    text: string,
+    fromTelegramId: number,
+    toTelegramId: number,
+  ) {
+    const from = await this.userService.findOne({ telegramId: fromTelegramId });
+
+    const to = await this.userService.findOne({
+      telegramId: toTelegramId,
+    });
+
+    const messageEntity = this.create({
+      text: markdownv2.escape(text),
+      from,
+      to,
+    });
+
+    if (!messageEntity) return null;
+
+    const notificationText = 'Admin reply:\n\n' + markdownv2.escape(text);
 
     await this.notificationService.sendNotification(
       to.telegramId,

@@ -44,10 +44,6 @@ export class OnboardingScene {
             resize_keyboard: true,
           },
         });
-        await this.onboardingService.scheduleNotifications({
-          telegramId: ctx.message.from.id,
-          onboardingStep: step,
-        });
       } else {
         const feedbacks = await this.feedbackService.findUserFeedbacks({
           telegramId: ctx.from.id,

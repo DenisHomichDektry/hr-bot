@@ -1,6 +1,6 @@
-import { Update, Ctx, Start, Help, On } from 'nestjs-telegraf';
+import { Update, Ctx, Start, Help, On, Action } from 'nestjs-telegraf';
 
-import { Scenes } from 'src/constants';
+import { Actions, Scenes } from 'src/constants';
 
 import { AppService } from './app.service';
 import { SceneContext } from './types';
@@ -17,6 +17,15 @@ export class AppUpdate {
       username: ctx.from.username,
     });
     await ctx.scene.enter(Scenes.Start);
+  }
+
+  @Action(new RegExp(`^${Actions.Reply}.*`))
+  async reply(@Ctx() ctx: SceneContext) {
+    await ctx.scene.enter(Scenes.Reply, {
+      ...ctx.session.__scenes.state,
+      previousScene: ctx.scene.current.id,
+      replyTo: ctx.callbackQuery.data.slice(5),
+    });
   }
 
   @Help()

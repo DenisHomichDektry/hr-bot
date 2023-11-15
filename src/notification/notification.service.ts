@@ -5,6 +5,7 @@ import { InjectBot } from 'nestjs-telegraf';
 import { Telegraf } from 'telegraf';
 import { Cron } from '@nestjs/schedule';
 import { markdownv2 } from 'telegram-format';
+import { InlineKeyboardMarkup } from '@telegraf/types/markup';
 
 import { UserService } from 'src/user/services/user.service';
 import { OnboardingEntity } from 'src/onboarding/onboarding.entity';
@@ -74,9 +75,14 @@ export class NotificationService {
     );
   }
 
-  async sendNotification(telegramId: number, text: string) {
+  async sendNotification(
+    telegramId: number,
+    text: string,
+    replyMarkup?: InlineKeyboardMarkup,
+  ) {
     await this.bot.telegram.sendMessage(telegramId, text, {
       parse_mode: 'MarkdownV2',
+      reply_markup: replyMarkup,
     });
   }
 

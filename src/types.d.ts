@@ -24,6 +24,8 @@ export interface SceneContext extends TelegrafSceneContext {
       expires?: number;
       state?: {
         management: boolean;
+        previousScene?: string;
+        replyTo?: number; // telegram user id
         knowledgeBaseItem?: {
           id?: string;
           title?: string;

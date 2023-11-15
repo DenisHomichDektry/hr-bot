@@ -75,6 +75,17 @@ export class OnboardingService {
       if (!updatedUser) {
         return null;
       }
+
+      const onboardingStep = await this.findOne({
+        order,
+      });
+
+      await this.scheduleNotifications({
+        telegramId: user.telegramId,
+        onboardingStep,
+      });
+
+      return onboardingStep;
     }
 
     return await this.findOne({

@@ -16,4 +16,5 @@ export enum Scenes {
   Onboarding = 'onboarding',
   Feedback = 'feedback',
   Assistance = 'assistance',
+  Reply = 'reply',
 }

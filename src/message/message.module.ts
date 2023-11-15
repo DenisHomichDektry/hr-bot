@@ -7,7 +7,7 @@ import { OnboardingEntity } from 'src/onboarding/onboarding.entity';
 
 import { MessageEntity } from './message.entity';
 import { MessageService } from './message.service';
-import { AssistanceScene } from './scenes';
+import { AssistanceScene, ReplyScene } from './scenes';
 
 @Module({
   imports: [
@@ -15,6 +15,6 @@ import { AssistanceScene } from './scenes';
     UserModule,
     NotificationModule,
   ],
-  providers: [MessageService, AssistanceScene],
+  providers: [MessageService, AssistanceScene, ReplyScene],
 })
 export class MessageModule {}
