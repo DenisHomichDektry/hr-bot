@@ -79,6 +79,11 @@ export class OnboardingScene {
     }
   }
 
+  @Hears(Actions.Assistance)
+  async assistance(@Ctx() ctx: SceneContext) {
+    await ctx.scene.enter(Scenes.Assistance, ctx.session.__scenes.state);
+  }
+
   @Hears(Actions.Back)
   async leave(@Ctx() ctx: SceneContext) {
     if (ctx.session.__scenes.state.management) {

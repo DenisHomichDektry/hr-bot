@@ -106,16 +106,7 @@ export class OnboardingService {
         telegramId: userTelegramId,
       });
       await this.notificationService.remove(existingNotifications);
-      const onboardingStep = await this.findOne({});
-      const { firstName, lastName, username } = user;
-      const text = `User [${
-        firstName + ' ' + lastName
-      }](https://t.me/${username}) has completed the onboarding process\\!`;
 
-      await this.notificationService.sendNotification(
-        onboardingStep.reportTo.telegramId,
-        text,
-      );
       return null;
     }
 

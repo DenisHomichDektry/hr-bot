@@ -3,17 +3,26 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { UserService } from 'src/user/services/user.service';
-import { Actions, feedbackRange } from 'src/constants';
+import { feedbackRange } from 'src/constants';
+import { NotificationService } from 'src/notification/notification.service';
+import { OnboardingEntity } from 'src/onboarding/onboarding.entity';
 
 import { FeedbackEntity } from './feedback.entity';
-import { IFeedbackCreate, IUserFeedbacks } from './types';
+import {
+  IFeedbackCreate,
+  IFeedbackCreateTelegramId,
+  IUserFeedbacks,
+} from './types';
 
 @Injectable()
 export class FeedbackService {
   constructor(
     @InjectRepository(FeedbackEntity)
     private readonly feedbackRepository: Repository<FeedbackEntity>,
+    @InjectRepository(OnboardingEntity)
+    private readonly onboardingRepository: Repository<OnboardingEntity>,
     private readonly userService: UserService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async findAll(): Promise<FeedbackEntity[]> {
@@ -80,5 +89,39 @@ export class FeedbackService {
         feedbackRange[feedback.value]
       );
     });
+  }
+
+  async createAndNotify(feedback: IFeedbackCreateTelegramId) {
+    const feedbackEntity = await this.create(feedback);
+
+    if (!feedbackEntity) {
+      return null;
+    }
+
+    const user = await this.userService.findOne({
+      telegramId: feedback.telegramId,
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    const onboardingStep = await this.onboardingRepository.findOne({
+      where: {
+        order: 0,
+      },
+      relations: ['reportTo'],
+    });
+    const { firstName, lastName, username } = user;
+    const text = `User [${
+      firstName + ' ' + lastName
+    }](https://t.me/${username}) has completed the onboarding process\\!`;
+
+    await this.notificationService.sendNotification(
+      onboardingStep.reportTo.telegramId,
+      text,
+    );
+
+    return feedbackEntity;
   }
 }

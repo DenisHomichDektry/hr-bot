@@ -3,7 +3,7 @@ interface IFeedbackCreateUserId {
   userId?: string;
 }
 
-interface IFeedbackCreateTelegramId {
+export interface IFeedbackCreateTelegramId {
   value: number;
   telegramId?: number;
 }

@@ -15,4 +15,5 @@ export enum Scenes {
   RemoveKnowledgeBaseItem = 'remove-knowledge-base-item',
   Onboarding = 'onboarding',
   Feedback = 'feedback',
+  Assistance = 'assistance',
 }

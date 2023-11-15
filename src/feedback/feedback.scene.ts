@@ -33,7 +33,7 @@ export class FeedbackScene {
 
   @Hears(feedbackRange)
   async leave(@Ctx() ctx: SceneContext) {
-    await this.feedbackService.create({
+    await this.feedbackService.createAndNotify({
       telegramId: ctx.from.id,
       value: feedbackRange.indexOf(ctx.message.text),
     });
