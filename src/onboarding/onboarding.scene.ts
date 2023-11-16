@@ -74,7 +74,9 @@ export class OnboardingScene {
       await ctx.reply(
         'Great! You have completed the step!\nHere is the next one:',
       );
-      await ctx.reply(this.onboardingService.getOnboardingStepText(step));
+      await ctx.reply(this.onboardingService.getOnboardingStepText(step), {
+        parse_mode: 'HTML',
+      });
     } else {
       await ctx.reply('You have completed the onboarding process!');
       await ctx.scene.enter(Scenes.Feedback, ctx.session.__scenes.state);

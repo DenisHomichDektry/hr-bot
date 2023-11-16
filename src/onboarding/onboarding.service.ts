@@ -159,7 +159,7 @@ export class OnboardingService {
   getOnboardingStepText(step: OnboardingEntity): string {
     return `${step.title}\n\n${step.description}\n\n${html.url(
       'Link',
-      step.link,
+      step.link.trim(),
     )}`;
   }
 }
