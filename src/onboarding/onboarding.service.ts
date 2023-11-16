@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { InsertResult } from 'typeorm/query-builder/result/InsertResult';
 import { DeleteResult } from 'typeorm/query-builder/result/DeleteResult';
+import { html } from 'telegram-format';
 
 import { UserService } from 'src/user/services/user.service';
 import { NotificationService } from 'src/notification/notification.service';
@@ -153,5 +154,12 @@ export class OnboardingService {
       });
       latestNotificationTime += interval;
     }
+  }
+
+  getOnboardingStepText(step: OnboardingEntity): string {
+    return `${step.title}\n\n${step.description}\n\n${html.url(
+      'Link',
+      step.link,
+    )}`;
   }
 }

@@ -38,7 +38,8 @@ export class OnboardingScene {
       await ctx.reply('Welcome to the onboarding process!');
 
       if (step) {
-        await ctx.reply(`${step.title}\n\n${step.link}`, {
+        await ctx.reply(this.onboardingService.getOnboardingStepText(step), {
+          parse_mode: 'HTML',
           reply_markup: {
             keyboard: Keyboards.OnboardingEnter,
             resize_keyboard: true,
@@ -50,7 +51,12 @@ export class OnboardingScene {
         });
 
         if (feedbacks.length) {
-          await ctx.reply('You have already completed the onboarding process!');
+          await ctx.reply(
+            'You have already completed the onboarding process!',
+            {
+              parse_mode: 'HTML',
+            },
+          );
           await ctx.scene.enter(Scenes.Start, ctx.session.__scenes.state);
         } else {
           await ctx.reply('No steps found');
@@ -68,7 +74,7 @@ export class OnboardingScene {
       await ctx.reply(
         'Great! You have completed the step!\nHere is the next one:',
       );
-      await ctx.reply(`${step.title}\n\n${step.link}`);
+      await ctx.reply(this.onboardingService.getOnboardingStepText(step));
     } else {
       await ctx.reply('You have completed the onboarding process!');
       await ctx.scene.enter(Scenes.Feedback, ctx.session.__scenes.state);

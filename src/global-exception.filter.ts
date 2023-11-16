@@ -23,6 +23,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, context: ExecutionContext) {
     const isWebApp = context.getType() === 'http';
     if (isWebApp) {
+      console.log(exception);
+
       const { httpAdapter } = this.httpAdapterHost;
       const ctx = context.switchToHttp();
 
@@ -31,7 +33,11 @@ export class GlobalExceptionFilter implements ExceptionFilter {
           ? exception.getStatus()
           : HttpStatus.INTERNAL_SERVER_ERROR;
 
-      httpAdapter.reply(ctx.getResponse(), exception.getResponse(), httpStatus);
+      httpAdapter.reply(
+        ctx.getResponse(),
+        exception?.getResponse?.(),
+        httpStatus,
+      );
       return;
     }
 
