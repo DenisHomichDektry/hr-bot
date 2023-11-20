@@ -4,15 +4,15 @@ import { Repository } from 'typeorm';
 import { InjectBot } from 'nestjs-telegraf';
 import { Telegraf } from 'telegraf';
 import { Cron } from '@nestjs/schedule';
-import { markdownv2 } from 'telegram-format';
 import { InlineKeyboardMarkup } from '@telegraf/types/markup';
 
 import { UserService } from 'src/user/services/user.service';
-import { OnboardingEntity } from 'src/onboarding/onboarding.entity';
+import { OnboardingEntity } from 'src/onboarding/entities/onboarding.entity';
 import { SceneContext } from 'src/types';
+import { UserEntity } from 'src/user/entities/user.entity';
 
 import { NotificationEntity } from './notification.entity';
-import { CreateNotificationDto, GetNotificationDto } from './dto';
+import { IGetNotification, TNotificationCreate } from './types';
 
 @Injectable()
 export class NotificationService {
@@ -25,45 +25,37 @@ export class NotificationService {
     @InjectBot() private bot: Telegraf<SceneContext>,
   ) {}
 
-  async create(dto: CreateNotificationDto) {
-    const user = await this.userService.findOne({
-      id: dto.userId,
-      telegramId: dto.telegramId,
-    });
+  async create(dto: TNotificationCreate) {
+    let user: UserEntity;
 
-    if (!user) {
-      return null;
+    if ('telegramId' in dto) {
+      user = await this.userService.findOne({
+        telegramId: dto.telegramId,
+      });
     }
 
-    const onboardingStep = await this.onboardingRepository.findOne({
-      where: { id: dto.onboardingStepId },
-    });
+    if ('user' in dto) {
+      user = dto.user;
+    }
 
-    if (!onboardingStep) {
+    if (!user) {
       return null;
     }
 
     const notification = this.notificationRepository.create({
       ...dto,
       user,
-      onboardingStep,
     });
 
     return await this.notificationRepository.save(notification);
   }
 
-  async findAll(dto?: GetNotificationDto) {
-    const where = [];
-
-    if (dto?.userId) where.push({ user: { id: dto.userId } });
-    if (dto?.telegramId) where.push({ user: { telegramId: dto.telegramId } });
-    if (dto?.onboardingStepId) {
-      where.push({ onboardingStep: { id: dto.onboardingStepId } });
-    }
-
+  async findAll(dto?: IGetNotification) {
     return await this.notificationRepository.find({
-      relations: ['user', 'onboardingStep'],
-      where,
+      relations: ['user'],
+      where: {
+        source: dto?.source,
+      },
     });
   }
 
@@ -81,7 +73,7 @@ export class NotificationService {
     replyMarkup?: InlineKeyboardMarkup,
   ) {
     await this.bot.telegram.sendMessage(telegramId, text, {
-      parse_mode: 'MarkdownV2',
+      parse_mode: 'HTML',
       reply_markup: replyMarkup,
     });
   }
@@ -99,12 +91,7 @@ export class NotificationService {
       const { sendAt } = notification;
 
       if (new Date(sendAt).getTime() < Date.now()) {
-        const text = `Hey! It's time to complete the step "${notification.onboardingStep.title}"\n\n${notification.onboardingStep.link}`;
-
-        this.sendNotification(
-          notification.user.telegramId,
-          markdownv2.escape(text),
-        );
+        this.sendNotification(notification.user.telegramId, notification.text);
         this.remove(notification);
       }
     });

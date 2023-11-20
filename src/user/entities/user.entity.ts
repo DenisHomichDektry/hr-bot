@@ -31,9 +31,6 @@ export class UserEntity {
   @Column({ default: false })
   onboardingCompleted: boolean;
 
-  @Column({ default: null })
-  onboardingStep: number;
-
   @CreateDateColumn()
   createdAt: string;
 }

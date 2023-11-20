@@ -7,7 +7,6 @@ import {
 } from 'typeorm';
 
 import { UserEntity } from 'src/user/entities/user.entity';
-import { OnboardingEntity } from 'src/onboarding/onboarding.entity';
 
 @Entity('notification')
 export class NotificationEntity {
@@ -17,8 +16,11 @@ export class NotificationEntity {
   @ManyToOne(() => UserEntity)
   user: UserEntity;
 
-  @ManyToOne(() => OnboardingEntity)
-  onboardingStep: OnboardingEntity;
+  @Column({ nullable: true })
+  text: string;
+
+  @Column({ nullable: true })
+  source: string; // id of the source; at the moment, OnboardingProgressEntity is the only source; in the future, we may have other sources
 
   @Column({ type: 'timestamp' })
   sendAt: string;

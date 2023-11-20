@@ -8,7 +8,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 
-import { OnboardingService } from './onboarding.service';
+import { OnboardingService } from './services';
 import { UpsertOnboardingDto } from './dto';
 
 @Controller('onboarding')

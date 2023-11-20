@@ -5,7 +5,7 @@ import { Scenes, Actions } from 'src/constants';
 import { FeedbackService } from 'src/feedback/feedback.service';
 
 import * as Keyboards from './keyboards';
-import { OnboardingService } from './onboarding.service';
+import { OnboardingService } from './services';
 
 @Scene(Scenes.Onboarding)
 export class OnboardingScene {
@@ -31,7 +31,7 @@ export class OnboardingScene {
       });
       // USER FLOW
     } else {
-      const step = await this.onboardingService.getOnboardingStep(
+      const step = await this.onboardingService.getStepOnEnter(
         ctx.message.from.id,
       );
 

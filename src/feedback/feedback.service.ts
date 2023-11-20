@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { UserService } from 'src/user/services/user.service';
 import { feedbackRange } from 'src/constants';
 import { NotificationService } from 'src/notification/notification.service';
-import { OnboardingEntity } from 'src/onboarding/onboarding.entity';
+import { OnboardingEntity } from 'src/onboarding/entities/onboarding.entity';
 
 import { FeedbackEntity } from './feedback.entity';
 import {

@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { UserModule } from 'src/user/user.module';
 import { NotificationModule } from 'src/notification/notification.module';
-import { OnboardingEntity } from 'src/onboarding/onboarding.entity';
+import { OnboardingEntity } from 'src/onboarding/entities/onboarding.entity';
 
 import { FeedbackEntity } from './feedback.entity';
 import { FeedbackService } from './feedback.service';

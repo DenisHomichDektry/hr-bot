@@ -28,7 +28,7 @@ export class OnboardingEntity {
   @Column('int', {
     array: true,
     nullable: true,
-    default: [600000, 600000, 600000],
+    default: [600000, 600000, 600000, 600000],
   })
   notificationIntervals: number[]; // Store durations in milliseconds
 

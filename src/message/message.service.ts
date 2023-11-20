@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { markdownv2 } from 'telegram-format';
+import { html } from 'telegram-format';
 
 import { UserService } from 'src/user/services/user.service';
 import { NotificationService } from 'src/notification/notification.service';
-import { OnboardingEntity } from 'src/onboarding/onboarding.entity';
 import { Actions } from 'src/constants';
+import { OnboardingProgressService } from 'src/onboarding/services';
 
 import { MessageEntity } from './message.entity';
 import { IMessageCreate, TFindAllMessages } from './types';
@@ -17,10 +17,9 @@ export class MessageService {
   constructor(
     @InjectRepository(MessageEntity)
     private readonly messageRepository: Repository<MessageEntity>,
-    @InjectRepository(OnboardingEntity)
-    private readonly onboardingRepository: Repository<OnboardingEntity>,
     private readonly userService: UserService,
     private readonly notificationService: NotificationService,
+    private readonly onboardingProgressService: OnboardingProgressService,
   ) {}
   async create(message: IMessageCreate) {
     const from = await this.userService.findOne(message.from);
@@ -32,7 +31,7 @@ export class MessageService {
     }
 
     const messageEntity = this.messageRepository.create({
-      text: markdownv2.escape(message.text),
+      text: html.escape(message.text),
       from,
       to,
     });
@@ -51,20 +50,29 @@ export class MessageService {
     return await this.messageRepository.delete(id);
   }
 
-  async sendAssistanceMessage(text: string, fromTelegramId: number) {
+  async sendAssistanceMessage(
+    text: string,
+    fromTelegramId: number,
+  ): Promise<MessageEntity | null> {
     const from = await this.userService.findOne({ telegramId: fromTelegramId });
-    const onboardingStep = await this.onboardingRepository.findOne({
-      where: {
-        order: from.onboardingStep,
-      },
-      relations: ['reportTo'],
-    });
+
+    if (!from) return null;
+
+    const { step } =
+      await this.onboardingProgressService.getLatestOnboardingStep(
+        fromTelegramId,
+      );
+
+    if (!step) return null;
+
     const to = await this.userService.findOne({
-      id: onboardingStep.reportTo.id,
+      id: step.reportTo.id,
     });
 
+    if (!to) return null;
+
     const messageEntity = this.create({
-      text: markdownv2.escape(text),
+      text: html.escape(text),
       from: {
         telegramId: fromTelegramId,
       },
@@ -73,13 +81,13 @@ export class MessageService {
 
     if (!messageEntity) return null;
 
-    const notificationText = `User ${markdownv2.bold(
-      markdownv2.escape(from.firstName),
-    )} ${markdownv2.bold(
-      markdownv2.escape(from.lastName),
-    )} requested help with onboarding step "${markdownv2.escape(
-      onboardingStep.title,
-    )}"\\.\n\nMessage:\n\n${markdownv2.escape(text)}`;
+    const notificationText = `User ${html.bold(
+      html.escape(from.firstName),
+    )} ${html.bold(
+      html.escape(from.lastName),
+    )} requested help with onboarding step "${
+      step.title
+    }".\n\nMessage:\n\n${html.escape(text)}`;
 
     await this.notificationService.sendNotification(
       to.telegramId,
@@ -109,14 +117,14 @@ export class MessageService {
     });
 
     const messageEntity = this.create({
-      text: markdownv2.escape(text),
+      text: html.escape(text),
       from,
       to,
     });
 
     if (!messageEntity) return null;
 
-    const notificationText = 'Admin reply:\n\n' + markdownv2.escape(text);
+    const notificationText = 'Admin reply:\n\n' + html.escape(text);
 
     await this.notificationService.sendNotification(
       to.telegramId,
