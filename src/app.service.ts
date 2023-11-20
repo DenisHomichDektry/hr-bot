@@ -4,20 +4,38 @@ import { SceneContext } from 'telegraf/typings/scenes';
 import { Role } from 'src/auth/role.enum';
 import { Actions } from 'src/constants';
 import { UserService } from 'src/user/services/user.service';
+import { OnboardingProgressService } from 'src/onboarding/services';
 
 @Injectable()
 export class AppService {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly onboardingProgressService: OnboardingProgressService,
+  ) {}
 
   getHello(): string {
     return 'Hello World!';
   }
 
-  startKeyboard(ctx: SceneContext) {
+  async startKeyboard(ctx: SceneContext) {
     const userRole = ctx.state.role;
-    return userRole === Role.Admin
-      ? [[{ text: Actions.KnowledgeBase }], [{ text: Actions.AdminPanel }]]
-      : [[{ text: Actions.KnowledgeBase }], [{ text: Actions.Onboarding }]];
+
+    if (userRole === Role.Admin) {
+      return [
+        [{ text: Actions.KnowledgeBase }],
+        [{ text: Actions.AdminPanel }],
+      ];
+    } else {
+      const { progress } =
+        await this.onboardingProgressService.getLatestOnboardingStep(
+          ctx.from.id,
+        );
+      const isOnboardingCompleted = !!progress?.completedAt;
+
+      return isOnboardingCompleted
+        ? [[{ text: Actions.KnowledgeBase }]]
+        : [[{ text: Actions.KnowledgeBase }], [{ text: Actions.Onboarding }]];
+    }
   }
 
   async updateUsername(user: { telegramId: number; username: string }) {

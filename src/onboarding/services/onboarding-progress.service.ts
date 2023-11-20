@@ -99,14 +99,6 @@ export class OnboardingProgressService {
       return result;
     }
 
-    if (onboardingProgressArr?.length === 0) {
-      result.progress = await this.createFirstOnboardingProgress(
-        userTelegramId,
-      );
-      result.step = result.progress.step;
-      return result;
-    }
-
     return result;
   }
 

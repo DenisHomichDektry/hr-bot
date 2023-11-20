@@ -13,7 +13,7 @@ export class StartScene {
 
   @SceneEnter()
   async enter(@Ctx() ctx: SceneContext) {
-    const keyboard = this.appService.startKeyboard(ctx);
+    const keyboard = await this.appService.startKeyboard(ctx);
     await ctx.reply("Let's see how I can help you", {
       reply_markup: {
         keyboard,

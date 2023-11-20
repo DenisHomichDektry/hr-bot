@@ -64,6 +64,14 @@ export class OnboardingService {
       userTelegramId,
     );
 
+    if (!result?.step) {
+      result.progress =
+        await this.onboardingProgressService.createFirstOnboardingProgress(
+          userTelegramId,
+        );
+      result.step = result?.progress?.step;
+    }
+
     if (!result?.step) return null;
 
     const existingNotifications = await this.notificationService.findAll({
