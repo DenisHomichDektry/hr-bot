@@ -7,13 +7,12 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
-const { combine, timestamp, json, errors, align } = winston.format;
+const { combine, timestamp, json, errors } = winston.format;
 import 'winston-daily-rotate-file';
 
 import { KnowledgeBaseModule } from 'src/knowledge-base/knowledge-base.module';
 import { ormSource, store } from 'src/constants';
-import { RolesGuard } from 'src/auth/roles.guard';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard, RolesGuard } from 'src/auth/guards';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';

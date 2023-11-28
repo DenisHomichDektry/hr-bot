@@ -1,19 +1,25 @@
-import { ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ExecutionContext,
+  Injectable,
+} from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as crypto from 'crypto';
+import { JwtService } from '@nestjs/jwt';
+import { ExtractJwt } from 'passport-jwt';
 
 import { SceneContext } from 'src/types';
 import { UserEntity } from 'src/user/entities/user.entity';
 
-import { ICachedUsers } from './types';
+import { ICachedUsers, IGoogleUser, IJwtPayload } from './types';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
+    private jwtService: JwtService,
   ) {}
 
   private cachedUsers: ICachedUsers = {};
@@ -38,31 +44,21 @@ export class AuthService {
   }
 
   async validateWebAppUser(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
-    const initData = request.headers.authorization;
+    try {
+      const request = context.switchToHttp().getRequest();
+      const token = ExtractJwt.fromAuthHeaderAsBearerToken()(request);
 
-    const urlParams = new URLSearchParams(initData);
-    const hash = urlParams.get('hash');
-    urlParams.delete('hash');
-    urlParams.sort();
-    let dataCheckString = '';
-    for (const [key, value] of urlParams.entries()) {
-      dataCheckString += `${key}=${value}\n`;
+      const payload = await this.jwtService.verifyAsync(token);
+
+      const user = await this.userRepository.findOne({
+        where: { id: payload.sub },
+      });
+
+      return !!user;
+    } catch (e) {
+      console.log(e);
+      return false;
     }
-    dataCheckString = dataCheckString.slice(0, -1);
-
-    if (!hash || !process.env.TELEGRAM_TOKEN || !dataCheckString) return false;
-
-    const secret = crypto
-      .createHmac('sha256', 'WebAppData')
-      .update(process.env.TELEGRAM_TOKEN);
-
-    const calculatedHash = crypto
-      .createHmac('sha256', secret.digest())
-      .update(dataCheckString)
-      .digest('hex');
-
-    return hash === calculatedHash;
   }
 
   async getUserRole(telegramId: number) {
@@ -88,5 +84,39 @@ export class AuthService {
   clearCache() {
     console.log('clear cache');
     this.cachedUsers = {};
+  }
+
+  generateJwt(payload: IJwtPayload): string {
+    return this.jwtService.sign(payload);
+  }
+
+  async signIn(user: IGoogleUser): Promise<string | null> {
+    if (!user) {
+      throw new BadRequestException('Unauthenticated');
+    }
+
+    const userExists = await this.userRepository.findOne({
+      where: { email: user.email },
+    });
+
+    if (!userExists) {
+      return null;
+    }
+
+    await this.updateImage(user, userExists);
+
+    return this.generateJwt({
+      sub: userExists.id,
+      email: userExists.email,
+    });
+  }
+
+  async updateImage(user: IGoogleUser, userExists: UserEntity) {
+    if (userExists.imgUrl !== user.picture) {
+      await this.userRepository.update(
+        { email: user.email },
+        { imgUrl: user.picture },
+      );
+    }
   }
 }

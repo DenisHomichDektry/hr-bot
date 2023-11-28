@@ -1,7 +1,7 @@
 import { Action, Ctx, Hears, On, Scene, SceneEnter } from 'nestjs-telegraf';
 
 import { Actions, Scenes } from 'src/constants';
-import { Roles } from 'src/auth/reles.decorator';
+import { Roles } from 'src/auth/decorators';
 import { Role } from 'src/auth/role.enum';
 import { SceneContext } from 'src/types';
 

@@ -25,6 +25,12 @@ export class UserEntity {
   @Column({ default: null })
   username: string;
 
+  @Column({ default: null })
+  email: string;
+
+  @Column({ default: null })
+  imgUrl: string;
+
   @ManyToOne(() => UserRoleEntity)
   role: UserRoleEntity;
 

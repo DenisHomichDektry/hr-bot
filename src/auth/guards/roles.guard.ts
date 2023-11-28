@@ -3,8 +3,8 @@ import { Reflector } from '@nestjs/core';
 
 import { SceneContext } from 'src/types';
 
-import { Role } from './role.enum';
-import { ROLES_KEY } from './reles.decorator';
+import { Role } from '../role.enum';
+import { ROLES_KEY } from '../decorators';
 
 @Injectable()
 export class RolesGuard implements CanActivate {

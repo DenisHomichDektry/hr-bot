@@ -2,10 +2,9 @@ import { Ctx, Hears, Scene, SceneEnter, Action } from 'nestjs-telegraf';
 
 import { SceneContext } from 'src/types';
 import { Scenes, Actions } from 'src/constants';
-import { Roles } from 'src/auth/reles.decorator';
+import { Roles } from 'src/auth/decorators';
 import { Role } from 'src/auth/role.enum';
 
-import * as Keyboards from '../keyboards';
 import { KnowledgeBaseService } from '../services/knowledge-base.service';
 import { KnowledgeBaseCategoryService } from '../services/knowledge-base-category.service';
 
