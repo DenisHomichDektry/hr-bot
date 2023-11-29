@@ -24,9 +24,13 @@ export class AddUser1698057921171 implements MigrationInterface {
     await queryRunner.query(
       `INSERT INTO "user" ("firstName", "lastName", "telegramId", "roleId") VALUES ('Admin', 'Frankyshtein', '30310118', (SELECT "id" FROM "user_role" WHERE "name" = 'admin'))`,
     );
+    await queryRunner.query(
+      `CREATE TABLE "knowledge_base" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "title" character varying NOT NULL, "link" character varying NOT NULL, "description" character varying NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), PRIMARY KEY ("id"))`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`DROP TABLE "knowledge_base"`);
     await queryRunner.query(
       `ALTER TABLE "user" DROP CONSTRAINT "FK_c28e52f758e7bbc53828db92194"`,
     );
