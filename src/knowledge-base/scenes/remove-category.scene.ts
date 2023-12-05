@@ -6,7 +6,7 @@ import { Roles } from 'src/auth/decorators';
 import { Role } from 'src/auth/role.enum';
 
 import * as Keyboards from '../keyboards';
-import { KnowledgeBaseCategoryService } from '../services/knowledge-base-category.service';
+import { KnowledgeBaseCategoryService } from '../services';
 
 @Roles(Role.Admin)
 @Scene(Scenes.RemoveKnowledgeBaseCategory)

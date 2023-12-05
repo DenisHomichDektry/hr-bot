@@ -5,3 +5,6 @@ export * from './create-item.dto';
 export * from './get-all-items.dto';
 export * from './get-category.dto';
 export * from './update-item.dto';
+export * from './remove-item.dto';
+export * from './batch-upsert-category.dto';
+export * from './batch-remove-category.dto';

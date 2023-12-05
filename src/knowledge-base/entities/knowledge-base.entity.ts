@@ -19,7 +19,7 @@ export class KnowledgeBaseEntity {
   @Column()
   link: string;
 
-  @ManyToOne(() => KnowledgeBaseCategoryEntity)
+  @ManyToOne(() => KnowledgeBaseCategoryEntity, { onDelete: 'CASCADE' })
   category: KnowledgeBaseCategoryEntity;
 
   @CreateDateColumn()

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -6,6 +6,7 @@ import { Actions } from 'src/constants';
 
 import { KnowledgeBaseCategoryEntity } from '../entities/knowledge-base-category.entity';
 import {
+  BatchUpdateCategoryDto,
   CreateCategoryDto,
   GetCategoryDto,
   RemoveCategoryDto,
@@ -24,12 +25,23 @@ export class KnowledgeBaseCategoryService {
 
   async findOne(getCategoryDto: GetCategoryDto) {
     return await this.knowledgeBaseCategoryRepository.findOne({
-      where: getCategoryDto,
+      where: [
+        {
+          name: getCategoryDto.name,
+        },
+        {
+          id: getCategoryDto.id,
+        },
+      ],
     });
   }
 
   async findAll() {
-    return await this.knowledgeBaseCategoryRepository.find();
+    return await this.knowledgeBaseCategoryRepository.find({
+      order: {
+        createdAt: 'ASC',
+      },
+    });
   }
 
   async create(categoryDto: CreateCategoryDto) {
@@ -39,19 +51,21 @@ export class KnowledgeBaseCategoryService {
 
   async update(categoryDto: UpdateCategoryDto) {
     const category = await this.findOne({ id: categoryDto.id });
-    const sameNameCategory = await this.findOne({ name: categoryDto.name });
-    if (!category || sameNameCategory) {
-      return null;
-    }
 
     category.name = categoryDto.name;
     return await this.knowledgeBaseCategoryRepository.save(category);
   }
 
+  async updateBatch(categoryDto: BatchUpdateCategoryDto[]) {
+    return await this.knowledgeBaseCategoryRepository.upsert(categoryDto, [
+      'id',
+    ]);
+  }
+
   async remove(categoryDto: RemoveCategoryDto) {
     const category = await this.findOne({ id: categoryDto.id });
     if (!category) {
-      return null;
+      throw new HttpException('Category not found', 404);
     }
     const items = await this.knowledgeBaseEntityRepository.find({
       relations: ['category'],
@@ -67,6 +81,12 @@ export class KnowledgeBaseCategoryService {
     }
 
     return await this.knowledgeBaseCategoryRepository.remove(category);
+  }
+
+  async removeBatch(categories: RemoveCategoryDto[]) {
+    return await this.knowledgeBaseCategoryRepository.remove(
+      categories as KnowledgeBaseCategoryEntity[],
+    );
   }
 
   async viewCategories() {

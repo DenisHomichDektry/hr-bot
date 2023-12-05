@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { KeyboardButton } from '@telegraf/types/markup';
@@ -7,7 +7,13 @@ import { Actions } from 'src/constants';
 
 import { KnowledgeBaseEntity } from '../entities/knowledge-base.entity';
 import { KnowledgeBaseCategoryService } from './knowledge-base-category.service';
-import { CreateItemDto, GetAllItemsDto, UpdateItemDto } from '../dto';
+import {
+  CreateItemDto,
+  CreateItemWebDto,
+  GetAllItemsDto,
+  UpdateItemDto,
+  UpdateItemWebDto,
+} from '../dto';
 
 @Injectable()
 export class KnowledgeBaseService {
@@ -20,21 +26,29 @@ export class KnowledgeBaseService {
   async findAll(getAllItemsDto: GetAllItemsDto) {
     return await this.knowledgeBaseRepository.find({
       where: {
-        category: {
-          name: getAllItemsDto.categoryName,
-        },
+        category: [
+          {
+            name: getAllItemsDto.categoryName,
+          },
+          {
+            id: getAllItemsDto.categoryId,
+          },
+        ],
       },
-      relations: ['category'],
+      order: {
+        createdAt: 'ASC',
+      },
     });
   }
 
-  async create(knowledgeBaseDto: CreateItemDto) {
+  async create(knowledgeBaseDto: CreateItemDto | CreateItemWebDto) {
     const category = await this.knowledgeBaseCategoryService.findOne({
-      name: knowledgeBaseDto.category,
+      name: 'category' in knowledgeBaseDto ? knowledgeBaseDto.category : '',
+      id: 'categoryId' in knowledgeBaseDto ? knowledgeBaseDto.categoryId : '',
     });
 
     if (!category) {
-      return null;
+      throw new HttpException('Category not found', 404);
     }
 
     const knowledgeBase = this.knowledgeBaseRepository.create({
@@ -45,13 +59,24 @@ export class KnowledgeBaseService {
     return await this.knowledgeBaseRepository.save(knowledgeBase);
   }
 
-  async update(knowledgeBaseDto: UpdateItemDto) {
-    const category = await this.knowledgeBaseCategoryService.findOne({
-      name: knowledgeBaseDto.category,
-    });
+  async update(knowledgeBaseDto: UpdateItemDto | UpdateItemWebDto) {
+    let category;
+
+    if ('category' in knowledgeBaseDto) {
+      category = await this.knowledgeBaseCategoryService.findOne({
+        name: knowledgeBaseDto.category,
+      });
+    }
+
+    if ('categoryId' in knowledgeBaseDto) {
+      category = await this.knowledgeBaseCategoryService.findOne({
+        id: knowledgeBaseDto.categoryId,
+      });
+      delete knowledgeBaseDto.categoryId;
+    }
 
     if (!category) {
-      return null;
+      throw new HttpException('Category not found', 404);
     }
 
     return await this.knowledgeBaseRepository.update(knowledgeBaseDto.id, {
@@ -66,7 +91,7 @@ export class KnowledgeBaseService {
     });
 
     if (!knowledgeBaseItem) {
-      return null;
+      throw new HttpException('Item not found', 404);
     }
 
     return await this.knowledgeBaseRepository.remove(knowledgeBaseItem);

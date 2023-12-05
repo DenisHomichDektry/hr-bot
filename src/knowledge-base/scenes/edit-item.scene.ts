@@ -6,7 +6,7 @@ import { Roles } from 'src/auth/decorators';
 import { Role } from 'src/auth/role.enum';
 
 import * as Keyboards from '../keyboards';
-import { KnowledgeBaseService } from '../services/knowledge-base.service';
+import { KnowledgeBaseService } from '../services';
 import { isUpdateItemDto } from '../types';
 
 @Roles(Role.Admin)
