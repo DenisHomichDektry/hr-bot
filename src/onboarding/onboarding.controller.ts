@@ -21,12 +21,14 @@ export class OnboardingController {
   }
 
   @Post()
-  upsertOnboardingItems(@Body(new ValidationPipe()) body: UpsertOnboardingDto) {
+  async upsertOnboardingItems(
+    @Body(new ValidationPipe()) body: UpsertOnboardingDto,
+  ) {
     return this.onboardingService.upsert(body.items);
   }
 
   @Delete('/:id')
-  deleteOnboardingItem(@Param() id) {
+  async deleteOnboardingItem(@Param() { id }: { id: string }) {
     return this.onboardingService.delete(id);
   }
 }

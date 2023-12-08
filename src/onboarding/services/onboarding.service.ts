@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { InsertResult } from 'typeorm/query-builder/result/InsertResult';
 import { DeleteResult } from 'typeorm/query-builder/result/DeleteResult';
@@ -7,6 +7,7 @@ import { html } from 'telegram-format';
 
 import { UserService } from 'src/user/services/user.service';
 import { NotificationService } from 'src/notification/notification.service';
+import { NotificationEntity } from 'src/notification/notification.entity';
 
 import { OnboardingEntity, OnboardingProgressEntity } from '../entities';
 import { GetOnboardingStepDto, UpsertOnboardingItemDto } from '../dto';
@@ -23,6 +24,7 @@ export class OnboardingService {
     private readonly onboardingProgressService: OnboardingProgressService,
     private readonly userService: UserService,
     private readonly notificationService: NotificationService,
+    private dataSource: DataSource,
   ) {}
 
   async findAll(): Promise<OnboardingEntity[]> {
@@ -49,7 +51,33 @@ export class OnboardingService {
   }
 
   async delete(id: string): Promise<DeleteResult> {
-    await this.onboardingRepository.delete(id);
+    const onboarding = await this.findOne({ id });
+
+    const onboardingProgress = await this.onboardingProgressRepository.find({
+      where: {
+        step: {
+          id,
+        },
+      },
+      relations: ['step'],
+    });
+
+    const notifications: NotificationEntity[] = [];
+    for (const progress of onboardingProgress) {
+      const progressNotifications = await this.notificationService.findAll({
+        source: progress.id,
+      });
+      notifications.push(...progressNotifications);
+    }
+
+    await this.dataSource.manager.transaction(
+      async (transactionalEntityManager) => {
+        await transactionalEntityManager.remove(notifications);
+        await transactionalEntityManager.remove(onboardingProgress);
+        await transactionalEntityManager.remove(onboarding);
+      },
+    );
+
     const items = await this.findAll();
     items.forEach((item, index) => {
       item.order = index;
