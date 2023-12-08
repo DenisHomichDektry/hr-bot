@@ -16,7 +16,12 @@ export class AppUpdate {
       telegramId: ctx.from.id,
       username: ctx.from.username,
     });
-    await ctx.scene.enter(Scenes.Start);
+
+    if (ctx.payload === 'create_user') {
+      await ctx.scene.enter(Scenes.User);
+    } else {
+      await ctx.scene.enter(Scenes.Start);
+    }
   }
 
   @Action(new RegExp(`^${Actions.Reply}.*`))

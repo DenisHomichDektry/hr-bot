@@ -47,4 +47,5 @@ export interface SceneContext extends TelegrafSceneContext {
       };
     };
   };
+  payload?: string;
 }

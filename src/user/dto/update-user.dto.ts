@@ -17,6 +17,10 @@ export class UpdateUserDto {
   role?: 'admin' | 'user';
 
   @IsOptional()
+  @IsUUID()
+  roleId?: string;
+
+  @IsOptional()
   @IsNumber()
   onboardingStep?: number;
 

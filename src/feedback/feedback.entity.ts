@@ -13,7 +13,7 @@ export class FeedbackEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
   user: UserEntity;
 
   @Column()

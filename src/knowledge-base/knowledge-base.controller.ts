@@ -31,7 +31,6 @@ export class KnowledgeBaseController {
 
   @Get('category')
   async categories() {
-    await new Promise((resolve) => setTimeout(resolve, 400));
     return this.knowledgeBaseCategoryService.findAll();
   }
 
@@ -68,8 +67,6 @@ export class KnowledgeBaseController {
 
   @Get('category/:categoryId/item')
   async items(@Param(new ValidationPipe()) getAllItemsDto: GetAllItemsDto) {
-    await new Promise((resolve) => setTimeout(resolve, 400));
-
     return this.knowledgeBaseService.findAll(getAllItemsDto);
   }
 
@@ -82,8 +79,6 @@ export class KnowledgeBaseController {
   async editItem(
     @Body(new ValidationPipe()) knowledgeBaseDto: UpdateItemWebDto,
   ) {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
     return this.knowledgeBaseService.update(knowledgeBaseDto);
   }
 

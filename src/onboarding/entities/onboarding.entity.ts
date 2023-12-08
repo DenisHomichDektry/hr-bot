@@ -32,7 +32,7 @@ export class OnboardingEntity {
   })
   notificationIntervals: number[]; // Store durations in milliseconds
 
-  @ManyToOne(() => UserEntity, { nullable: true })
+  @ManyToOne(() => UserEntity, { nullable: true, onDelete: 'SET NULL' })
   reportTo: UserEntity;
 
   @CreateDateColumn({ nullable: true })

@@ -13,6 +13,7 @@ import {
   RemoveUserScene,
   UserScene,
 } from './scenes';
+import { UserController } from './user.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity, UserRoleEntity]), AuthModule],
@@ -24,6 +25,7 @@ import {
     RemoveUserScene,
     EditUserScene,
   ],
+  controllers: [UserController],
   exports: [UserService],
 })
 export class UserModule {}

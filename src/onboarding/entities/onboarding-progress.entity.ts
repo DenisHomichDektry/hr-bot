@@ -15,7 +15,7 @@ export class OnboardingProgressEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => UserEntity, { onDelete: 'CASCADE' })
   user: UserEntity;
 
   @ManyToOne(() => OnboardingEntity)

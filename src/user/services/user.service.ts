@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -11,6 +11,7 @@ import {
   CreateUserDto,
   DeleteUserDto,
   GetUserDto,
+  GetUsersDto,
   UpdateUserDto,
 } from '../dto';
 
@@ -30,9 +31,16 @@ export class UserService {
     });
   }
 
-  async findAll() {
-    return this.userRepository.find({
+  async findAll(dto?: GetUsersDto) {
+    const take = dto?.limit || 5;
+    const skip = dto?.page * dto?.limit || 0;
+    return this.userRepository.findAndCount({
       relations: ['role'],
+      order: {
+        firstName: 'ASC',
+      },
+      take,
+      skip,
     });
   }
 
@@ -61,7 +69,7 @@ export class UserService {
     const user = await this.userRepository.findOne({ where: deleteDto });
 
     if (!user) {
-      return null;
+      throw new HttpException('User not found', 404);
     }
 
     const deletedEntity = await this.userRepository.remove(user);
@@ -76,12 +84,21 @@ export class UserService {
     });
 
     if (!user) {
-      return null;
+      throw new HttpException('User not found', 404);
     }
 
     if (updateUserDto.role) {
       const role = await this.useRoleService.findOne({
         name: updateUserDto.role,
+      });
+      if (role) {
+        user.role = role;
+      }
+    }
+
+    if (updateUserDto.roleId) {
+      const role = await this.useRoleService.findOne({
+        id: updateUserDto.roleId,
       });
       if (role) {
         user.role = role;
@@ -113,7 +130,7 @@ export class UserService {
   }
 
   async viewUsers() {
-    const users = await this.findAll();
+    const [users] = await this.findAll();
 
     return users.map((user) => {
       return {
