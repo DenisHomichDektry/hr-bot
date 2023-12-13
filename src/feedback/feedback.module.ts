@@ -8,6 +8,7 @@ import { OnboardingEntity } from 'src/onboarding/entities/onboarding.entity';
 import { FeedbackEntity } from './feedback.entity';
 import { FeedbackService } from './feedback.service';
 import { FeedbackScene } from './feedback.scene';
+import { FeedbackController } from './feedback.controller';
 
 @Module({
   imports: [
@@ -17,5 +18,6 @@ import { FeedbackScene } from './feedback.scene';
   ],
   providers: [FeedbackService, FeedbackScene],
   exports: [FeedbackService],
+  controllers: [FeedbackController],
 })
 export class FeedbackModule {}

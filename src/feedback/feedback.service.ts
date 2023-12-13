@@ -13,6 +13,7 @@ import {
   IFeedbackCreateTelegramId,
   IUserFeedbacks,
 } from './types';
+import { GetFeedbacksDto } from './dto';
 
 @Injectable()
 export class FeedbackService {
@@ -25,14 +26,18 @@ export class FeedbackService {
     private readonly notificationService: NotificationService,
   ) {}
 
-  async findAll(): Promise<FeedbackEntity[]> {
-    return await this.feedbackRepository.find({
+  async findAll(dto?: GetFeedbacksDto): Promise<[FeedbackEntity[], number]> {
+    const take = dto?.limit || 5;
+    const skip = dto?.page * dto?.limit || 0;
+    return await this.feedbackRepository.findAndCount({
       relations: ['user'],
       order: {
         user: {
           firstName: 'ASC',
         },
       },
+      take,
+      skip,
     });
   }
 
@@ -78,7 +83,7 @@ export class FeedbackService {
   }
 
   async viewFeedbacks() {
-    const feedbacks = await this.findAll();
+    const [feedbacks] = await this.findAll();
 
     return feedbacks.map((feedback) => {
       return (
