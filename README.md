@@ -6,7 +6,7 @@
 
 ```bash
 $ yarn install
-$ yarn schema:sync # sync database schema if needed
+$ yarn schema:run # sync database schema if needed
 ```
 
 
