@@ -34,6 +34,9 @@ export class UserEntity {
   @ManyToOne(() => UserRoleEntity)
   role: UserRoleEntity;
 
+  @Column({ default: null })
+  position: string; // position in the company
+
   @Column({ default: false })
   onboardingCompleted: boolean;
 

@@ -51,7 +51,13 @@ export class AuthService {
       const payload = await this.jwtService.verifyAsync(token);
 
       const user = await this.userRepository.findOne({
-        where: { id: payload.sub },
+        where: {
+          id: payload.sub,
+          role: {
+            name: 'admin',
+          },
+        },
+        relations: ['role'],
       });
 
       return !!user;
@@ -96,7 +102,8 @@ export class AuthService {
     }
 
     const userExists = await this.userRepository.findOne({
-      where: { email: user.email },
+      where: { email: user.email, role: { name: 'admin' } },
+      relations: ['role'],
     });
 
     if (!userExists) {
