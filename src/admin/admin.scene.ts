@@ -26,9 +26,12 @@ export class AdminScene {
 
   @Hears(Actions.LinkToWebVersion)
   async linkToWebVersion(@Ctx() ctx: SceneContext) {
-    await ctx.reply(`<a href="${process.env.WEB_APP_URL}">Web version</a>`, {
-      parse_mode: 'HTML',
-    });
+    await ctx.reply(
+      `<a href="${process.env.WEB_APP_URL}user-management">Web version</a>`,
+      {
+        parse_mode: 'HTML',
+      },
+    );
   }
 
   @Hears(Actions.Back)
