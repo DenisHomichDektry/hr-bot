@@ -123,30 +123,4 @@ export class KnowledgeBaseService {
       return acc;
     }, [] as KeyboardButton[][]);
   }
-
-  async viewItems(getAllItemsDto: GetAllItemsDto) {
-    const items = await this.findAll(getAllItemsDto);
-
-    return items.map((item) => {
-      return {
-        text: item.title + '\n' + item.link,
-        args: {
-          reply_markup: {
-            inline_keyboard: [
-              [
-                {
-                  text: Actions.Edit,
-                  callback_data: Actions.Edit + 'item|' + item.id,
-                },
-                {
-                  text: Actions.Remove,
-                  callback_data: Actions.Remove + 'item|' + item.id,
-                },
-              ],
-            ],
-          },
-        },
-      };
-    });
-  }
 }

@@ -24,19 +24,11 @@ export class AdminScene {
     await ctx.scene.enter(Scenes.User);
   }
 
-  @Hears(Actions.KnowledgeBaseManagement)
-  async knowledgeBaseManagement(@Ctx() ctx: SceneContext) {
-    await ctx.scene.enter(Scenes.KnowledgeBase, { management: true });
-  }
-
-  @Hears(Actions.OnboardingManagement)
-  async onboardingManagement(@Ctx() ctx: SceneContext) {
-    await ctx.scene.enter(Scenes.Onboarding, { management: true });
-  }
-
-  @Hears(Actions.ViewFeedback)
-  async viewFeedback(@Ctx() ctx: SceneContext) {
-    await ctx.scene.enter(Scenes.Feedback, { management: true });
+  @Hears(Actions.LinkToWebVersion)
+  async linkToWebVersion(@Ctx() ctx: SceneContext) {
+    await ctx.reply(`<a href="${process.env.WEB_APP_URL}">Web version</a>`, {
+      parse_mode: 'HTML',
+    });
   }
 
   @Hears(Actions.Back)

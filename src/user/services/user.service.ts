@@ -128,31 +128,4 @@ export class UserService {
     ]);
     return keyboards;
   }
-
-  async viewUsers() {
-    const [users] = await this.findAll();
-
-    return users.map((user) => {
-      return {
-        text:
-          user.firstName + ' ' + user.lastName + '\nRole: ' + user.role.name,
-        args: {
-          reply_markup: {
-            inline_keyboard: [
-              [
-                {
-                  text: Actions.Edit,
-                  callback_data: Actions.Edit + 'user|' + user.id,
-                },
-                {
-                  text: Actions.Remove,
-                  callback_data: Actions.Remove + 'user|' + user.id,
-                },
-              ],
-            ],
-          },
-        },
-      };
-    });
-  }
 }

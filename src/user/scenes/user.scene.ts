@@ -1,4 +1,4 @@
-import { Action, Ctx, Hears, On, Scene, SceneEnter } from 'nestjs-telegraf';
+import { Ctx, Hears, On, Scene, SceneEnter } from 'nestjs-telegraf';
 
 import { Actions, Scenes } from 'src/constants';
 import { Roles } from 'src/auth/decorators';
@@ -28,43 +28,6 @@ export class UserScene {
       ...ctx.session.__scenes.state,
       user: {
         telegramId: ctx.message.user_shared.user_id,
-      },
-    });
-  }
-
-  @Hears(Actions.ViewUsers)
-  async viewUsers(@Ctx() ctx: SceneContext) {
-    const responseData = await this.userService.viewUsers();
-
-    for (const data of responseData) {
-      await ctx.reply(data.text, data.args);
-    }
-
-    if (responseData.length === 0) {
-      await ctx.reply('No users found!');
-    }
-  }
-
-  @Action(new RegExp(`^${Actions.Edit}user.*`))
-  async edit(@Ctx() ctx: SceneContext) {
-    const userId = ctx.callbackQuery.data.split('|')[1];
-
-    await ctx.scene.enter(Scenes.EditUser, {
-      ...ctx.session.__scenes.state,
-      user: {
-        id: userId,
-      },
-    });
-  }
-
-  @Action(new RegExp(`^${Actions.Remove}user.*`))
-  async remove(@Ctx() ctx: SceneContext) {
-    const userId = ctx.callbackQuery.data.split('|')[1];
-
-    await ctx.scene.enter(Scenes.RemoveUser, {
-      ...ctx.session.__scenes.state,
-      user: {
-        id: userId,
       },
     });
   }

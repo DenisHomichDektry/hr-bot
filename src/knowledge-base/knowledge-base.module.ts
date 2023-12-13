@@ -4,16 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { KnowledgeBaseEntity } from './entities/knowledge-base.entity';
 import { KnowledgeBaseCategoryEntity } from './entities/knowledge-base-category.entity';
 import { KnowledgeBaseCategoryService, KnowledgeBaseService } from './services';
-import {
-  AddKnowledgeBaseCategoryScene,
-  AddKnowledgeBaseItemScene,
-  EditCategoryScene,
-  EditKnowledgeBaseItemScene,
-  KnowledgeBaseScene,
-  RemoveCategoryScene,
-  RemoveKnowledgeBaseItemScene,
-  ViewKnowledgeBaseItemsScene,
-} from './scenes';
+import { KnowledgeBaseScene } from './scenes';
 import { KnowledgeBaseController } from './knowledge-base.controller';
 
 @Module({
@@ -28,13 +19,6 @@ import { KnowledgeBaseController } from './knowledge-base.controller';
     KnowledgeBaseService,
     KnowledgeBaseScene,
     KnowledgeBaseCategoryService,
-    AddKnowledgeBaseCategoryScene,
-    AddKnowledgeBaseItemScene,
-    EditCategoryScene,
-    RemoveCategoryScene,
-    ViewKnowledgeBaseItemsScene,
-    EditKnowledgeBaseItemScene,
-    RemoveKnowledgeBaseItemScene,
   ],
 })
 export class KnowledgeBaseModule {}

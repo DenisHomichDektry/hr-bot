@@ -16,52 +16,33 @@ export class OnboardingScene {
 
   @SceneEnter()
   async enter(@Ctx() ctx: SceneContext) {
-    // ADMIN flow
-    if (ctx.session.__scenes.state.management) {
-      await ctx.reply('Open web app to manage onboarding flow.', {
+    const step = await this.onboardingService.getStepOnEnter(
+      ctx.message.from.id,
+    );
+
+    await ctx.reply('Welcome to the onboarding process!');
+
+    if (step) {
+      await ctx.reply(this.onboardingService.getOnboardingStepText(step), {
+        parse_mode: 'HTML',
         reply_markup: {
-          inline_keyboard: Keyboards.onboardingManagementInline,
-        },
-      });
-      await ctx.reply('Press "Back" when you finish', {
-        reply_markup: {
-          keyboard: Keyboards.onboardingManagement,
+          keyboard: Keyboards.OnboardingEnter,
           resize_keyboard: true,
         },
       });
-      // USER FLOW
     } else {
-      const step = await this.onboardingService.getStepOnEnter(
-        ctx.message.from.id,
-      );
+      const feedbacks = await this.feedbackService.findUserFeedbacks({
+        telegramId: ctx.from.id,
+      });
 
-      await ctx.reply('Welcome to the onboarding process!');
-
-      if (step) {
-        await ctx.reply(this.onboardingService.getOnboardingStepText(step), {
+      if (feedbacks.length) {
+        await ctx.reply('You have already completed the onboarding process!', {
           parse_mode: 'HTML',
-          reply_markup: {
-            keyboard: Keyboards.OnboardingEnter,
-            resize_keyboard: true,
-          },
         });
+        await ctx.scene.enter(Scenes.Start, ctx.session.__scenes.state);
       } else {
-        const feedbacks = await this.feedbackService.findUserFeedbacks({
-          telegramId: ctx.from.id,
-        });
-
-        if (feedbacks.length) {
-          await ctx.reply(
-            'You have already completed the onboarding process!',
-            {
-              parse_mode: 'HTML',
-            },
-          );
-          await ctx.scene.enter(Scenes.Start, ctx.session.__scenes.state);
-        } else {
-          await ctx.reply('No steps found');
-          await ctx.scene.enter(Scenes.Feedback, ctx.session.__scenes.state);
-        }
+        await ctx.reply('No steps found');
+        await ctx.scene.enter(Scenes.Feedback, ctx.session.__scenes.state);
       }
     }
   }

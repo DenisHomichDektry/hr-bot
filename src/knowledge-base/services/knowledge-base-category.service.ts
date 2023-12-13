@@ -2,8 +2,6 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { Actions } from 'src/constants';
-
 import { KnowledgeBaseCategoryEntity } from '../entities/knowledge-base-category.entity';
 import {
   BatchUpdateCategoryDto,
@@ -87,31 +85,5 @@ export class KnowledgeBaseCategoryService {
     return await this.knowledgeBaseCategoryRepository.remove(
       categories as KnowledgeBaseCategoryEntity[],
     );
-  }
-
-  async viewCategories() {
-    const categories = await this.findAll();
-
-    return categories.map((category) => {
-      return {
-        text: category.name,
-        args: {
-          reply_markup: {
-            inline_keyboard: [
-              [
-                {
-                  text: Actions.Edit,
-                  callback_data: Actions.Edit + 'category|' + category.id,
-                },
-                {
-                  text: Actions.Remove,
-                  callback_data: Actions.Remove + 'category|' + category.id,
-                },
-              ],
-            ],
-          },
-        },
-      };
-    });
   }
 }
